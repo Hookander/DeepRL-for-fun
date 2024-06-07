@@ -101,7 +101,8 @@ class Trainer():
     
     def train(self):
         if torch.cuda.is_available():
-            num_episodes = 600
+            print('CUDA')
+            num_episodes = 5000
         else:
             num_episodes = 300
         
