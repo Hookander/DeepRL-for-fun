@@ -11,12 +11,12 @@ from itertools import count
 
 class Trainer():
 
-    def __init__(self):
+    def __init__(self, config : Dict):
 
         self.display = False
         self.save = False
 
-        self.env_name = "CartPole-v1"
+        self.env_name = "LunarLander-v2" #"CartPole-v1"
         self.batch_size = 64
         self.gamma = 0.99
         self.tau = 0.001
