@@ -2,37 +2,49 @@ import torch
 import torch.optim as optim
 import math
 import gymnasium as gym
-from dqn import *
+from networks.dqn_small import *
 from src.utils import *
 from itertools import count
+from typing import Dict, Type
+from trainers.base_trainer import BaseTrainer
+from networks.base_net import BaseNet
 
 
 
 
-class Trainer():
+class BasicTrainer(BaseTrainer):
 
-    def __init__(self):
+    def __init__(self, config : Dict, network : Type[BaseNet]):
 
-        self.display = False
-        self.save = False
+        super().__init__(config)
 
-        self.env_name = "CartPole-v1"
-        self.batch_size = 64
-        self.gamma = 0.99
-        self.tau = 0.001
-        self.lr = 0.0001
-        self.eps_start = 0.9
-        self.eps_end = 0.01
-        self.eps_decay = 0.995
+        self.config_trainer = config['trainers']
+        self.env_config = config['envs']
+
+        print(self.config_trainer)
+
+        self.env_name = config['env']
+
+        self.num_episodes = self.config_trainer['num_episodes'] #1000
+        self.batch_size = self.config_trainer['batch_size']
+        self.gamma = self.config_trainer['gamma'] #0.99
+        self.tau = self.config_trainer['tau'] #0.001
+        self.lr = self.config_trainer['learning_rate'] #0.0001
+        self.eps_start = self.config_trainer['epsilon_start'] #0.9
+        self.eps_end = self.config_trainer['epsilon_end'] #0.01
+        self.eps_decay = self.config_trainer['epsilon_decay'] #0.995
+        
+        self.n_act = self.env_config['n_actions']
+        self.n_obs = self.env_config['n_observations']
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.env = gym.make(self.env_name)
-        self.n_act = self.env.action_space.n
-        self.n_obs = len(self.env.reset()[0])
+        #self.n_act = self.env.action_space.n
+        #self.n_obs = len(self.env.reset()[0])
 
-        self.policy_net = DQN(self.n_obs, self.n_act).to(self.device)
-        self.target_net = DQN(self.n_obs, self.n_act).to(self.device)
+        self.policy_net = network(self.n_obs, self.n_act).to(self.device)
+        self.target_net = network(self.n_obs, self.n_act).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=self.lr, amsgrad=True)
         self.memory = ReplayMemory(10000)
@@ -100,14 +112,9 @@ class Trainer():
         self.optimizer.step()
     
     def train(self):
-        if torch.cuda.is_available():
-            print('CUDA')
-            num_episodes = 5000
-        else:
-            num_episodes = 300
         
 
-        for i_episode in range(num_episodes):
+        for i_episode in range(self.num_episodes):
             # Initialize the environment and get its state
             state, info = self.env.reset()
             
@@ -145,9 +152,5 @@ class Trainer():
                     break
         print("training done")
     
-    def save_model(self):
-        torch.save(self.policy_net.state_dict(), "data/models/policy_net.pth")
-
-trainy = Trainer()
-trainy.train()
-trainy.save_model()
+    def save_model(self, path = "data/models/policy_net.pth"):
+        torch.save(self.policy_net.state_dict(), path)
