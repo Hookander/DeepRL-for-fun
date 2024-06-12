@@ -1,5 +1,0 @@
-
-
-env : LunarLander-v2
-n_observations : 8
-n_actions : 4

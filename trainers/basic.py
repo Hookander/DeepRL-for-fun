@@ -19,8 +19,8 @@ class BasicTrainer(BaseTrainer):
 
         super().__init__(config)
 
+        self.networkClass = network
         self.config_trainer = config['trainers']
-        self.env_config = config['envs']
 
         print(self.config_trainer)
 
@@ -35,8 +35,8 @@ class BasicTrainer(BaseTrainer):
         self.eps_end = self.config_trainer['epsilon_end'] #0.01
         self.eps_decay = self.config_trainer['epsilon_decay'] #0.995
         
-        self.n_act = self.env_config['n_actions']
-        self.n_obs = self.env_config['n_observations']
+        #self.n_act = self.env_config['n_actions']
+        #self.n_obs = self.env_config['n_observations']
 
         self.do_wandb = config['do_wandb']
         self.wandb_config = config['wandb_config']
@@ -44,11 +44,9 @@ class BasicTrainer(BaseTrainer):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.env = gym.make(self.env_name)
-        #self.n_act = self.env.action_space.n
-        #self.n_obs = len(self.env.reset()[0])
 
-        self.policy_net = network(self.n_obs, self.n_act).to(self.device)
-        self.target_net = network(self.n_obs, self.n_act).to(self.device)
+        self.policy_net = network(self.env.observation_space, self.env.action_space).to(self.device)
+        self.target_net = network(self.env.observation_space, self.env.action_space).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=self.lr, amsgrad=True)
         self.memory = ReplayMemory(10000)
@@ -57,6 +55,11 @@ class BasicTrainer(BaseTrainer):
 
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
+
+    def check_env_model_compatibility(self):
+        if isinstance(self.networkClass, CNN):
+            if len(self.env.observation_space.shape) == 1:
+                raise ValueError("The environment is not compatible with the CNN model")
 
     def select_action(self, state):
         
@@ -72,6 +75,7 @@ class BasicTrainer(BaseTrainer):
                 return self.policy_net(state).max(1).indices.view(1, 1)
         else:
             return torch.tensor([[self.env.action_space.sample()]], device=self.device, dtype=torch.long)
+
 
     def optimize_model(self):
         if len(self.memory) < self.batch_size:
@@ -119,7 +123,6 @@ class BasicTrainer(BaseTrainer):
         self.optimizer.step()
     
     def train(self):
-        
 
         for i_episode in range(self.num_episodes):
             total_reward = 0

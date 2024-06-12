@@ -1,10 +1,10 @@
 
-env : &env CartPole-v1
+env : CartPole-v1
 trainer : &trainer basic
 model : &model small
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 
@@ -13,7 +13,6 @@ wandb_config:
 # Defaults sub-configs and other Hydra config.
 defaults:
   - _self_
-  - envs : *env
   - trainers : *trainer
   - override hydra/hydra_logging: disabled  
   - override hydra/job_logging: disabled 

@@ -1,6 +1,6 @@
 from collections import namedtuple, deque
 import random
-
+from gymnasium.spaces import Discrete, Box
 
 
 Transition = namedtuple('Transition',
@@ -20,3 +20,15 @@ class ReplayMemory(object):
 
     def __len__(self):
         return len(self.memory)
+
+def nb_from_space(space):
+    if isinstance(space, Discrete):
+        return space.n
+    elif isinstance(space, Box):
+        nb = 1
+        for dim in space.shape:
+            nb *= dim
+
+        return nb
+    else:
+        raise ValueError("Space not recognized")
