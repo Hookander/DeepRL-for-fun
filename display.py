@@ -1,7 +1,7 @@
 import torch as nn
 import gymnasium as gym
 import torch
-from networks.dqn_small import *
+from networks.linear import *
 
 
 
@@ -10,10 +10,9 @@ class Displayer():
     def __init__(self, path_to_model):
         self.env_name = "LunarLander-v2"
         self.env = gym.make(self.env_name, render_mode = 'human')
-        self.n_act = self.env.action_space.n
-        self.n_obs = len(self.env.reset()[0])
 
-        self.model = DQN(self.n_obs, self.n_act)
+
+        self.model = Linear(self.env.observation_space, self.env.action_space)
         self.model.load_state_dict(torch.load(path_to_model, map_location=torch.device('cpu')))
     
     def display(self, nb):

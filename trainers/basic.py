@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 import math
 import gymnasium as gym
-from networks.dqn_small import *
+from networks.linear import *
 from src.utils import *
 from itertools import count
 from typing import Dict, Type
@@ -21,6 +21,7 @@ class BasicTrainer(BaseTrainer):
 
         self.networkClass = network
         self.config_trainer = config['trainers']
+        self.config_network = config['networks']
 
         print(self.config_trainer)
 
@@ -45,8 +46,8 @@ class BasicTrainer(BaseTrainer):
 
         self.env = gym.make(self.env_name)
 
-        self.policy_net = network(self.env.observation_space, self.env.action_space).to(self.device)
-        self.target_net = network(self.env.observation_space, self.env.action_space).to(self.device)
+        self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
+        self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=self.lr, amsgrad=True)
         self.memory = ReplayMemory(10000)
@@ -166,5 +167,9 @@ class BasicTrainer(BaseTrainer):
                 wandb.log({'total_reward': total_reward})
         print("training done")
     
-    def save_model(self, path = "data/models/policy_net.pth"):
-        torch.save(self.policy_net.state_dict(), path)
+    def save_model(self, path = "data/models/"):
+        if self.do_wandb:
+            run_name = wandb.run.name
+            torch.save(self.policy_net.state_dict(), path + run_name + '.pth')
+        else:
+            torch.save(self.policy_net.state_dict(), path + self.env_name + '_policy_net.pth')

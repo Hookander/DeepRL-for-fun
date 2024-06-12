@@ -1,12 +1,10 @@
 from typing import Dict, Type
 from networks.base_net import BaseNet
-from networks.dqn_small import DQNSmall
-from networks.dqn_medium import DQNMedium
+from networks.linear import LinearNetwork
 from networks.cnn import CNN
 
 
-model_name_to_ModelClass : Dict[str, Type[BaseNet]] = {
-    "small" : DQNSmall,
-    "medium" : DQNMedium,
+network_name_to_ModelClass : Dict[str, Type[BaseNet]] = {
+    "linear" : LinearNetwork,
     "cnn" : CNN
 }

@@ -12,7 +12,7 @@ import numpy as np
 
 # Project files
 
-from networks import model_name_to_ModelClass
+from networks import network_name_to_ModelClass
 from trainers import trainer_name_to_TrainerClass
 
 
@@ -23,10 +23,9 @@ def main(config: DictConfig):
     config = OmegaConf.to_container(config, resolve=True)
 
     trainer_name = config['trainer']
-    model_name = config['model']
-    print('trainer_name:', trainer_name)
+    network_name = config['network']
 
-    ModelClass = model_name_to_ModelClass[model_name]
+    ModelClass = network_name_to_ModelClass[network_name]
     TrainerClass = trainer_name_to_TrainerClass[trainer_name]
 
 
