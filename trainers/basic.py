@@ -8,6 +8,7 @@ from itertools import count
 from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
+import wandb
 
 
 
@@ -37,6 +38,9 @@ class BasicTrainer(BaseTrainer):
         self.n_act = self.env_config['n_actions']
         self.n_obs = self.env_config['n_observations']
 
+        self.do_wandb = config['do_wandb']
+        self.wandb_config = config['wandb_config']
+
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.env = gym.make(self.env_name)
@@ -50,6 +54,9 @@ class BasicTrainer(BaseTrainer):
         self.memory = ReplayMemory(10000)
 
         self.steps_done = 0
+
+        if self.do_wandb:
+            wandb.init(project=self.wandb_config['project'], config = self.config)
 
     def select_action(self, state):
         
@@ -115,6 +122,7 @@ class BasicTrainer(BaseTrainer):
         
 
         for i_episode in range(self.num_episodes):
+            total_reward = 0
             # Initialize the environment and get its state
             state, info = self.env.reset()
             
@@ -123,6 +131,7 @@ class BasicTrainer(BaseTrainer):
             for t in count():
                 action = self.select_action(state)
                 observation, reward, terminated, truncated, _ = self.env.step(action.item())
+                total_reward += reward
                 reward = torch.tensor([reward], device=self.device)
                 done = terminated or truncated
 
@@ -150,6 +159,8 @@ class BasicTrainer(BaseTrainer):
 
                 if done:
                     break
+            if self.do_wandb:
+                wandb.log({'total_reward': total_reward})
         print("training done")
     
     def save_model(self, path = "data/models/policy_net.pth"):
