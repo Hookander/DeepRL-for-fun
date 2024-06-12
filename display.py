@@ -1,7 +1,7 @@
 import torch as nn
 import gymnasium as gym
 import torch
-from dqn import *
+from networks.dqn_small import *
 
 
 
