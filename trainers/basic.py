@@ -8,6 +8,7 @@ from itertools import count
 from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
+from src.wrappers.repeat_wrapper import RepeatActionV0
 import wandb
 import yaml
 
