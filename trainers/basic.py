@@ -36,15 +36,19 @@ class BasicTrainer(BaseTrainer):
         self.eps_end = self.config_trainer['epsilon_end'] #0.01
         self.eps_decay = self.config_trainer['epsilon_decay'] #0.995
         
-        #self.n_act = self.env_config['n_actions']
-        #self.n_obs = self.env_config['n_observations']
 
         self.do_wandb = config['do_wandb']
         self.wandb_config = config['wandb_config']
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.env = gym.make(self.env_name)
+        self.is_continuous = self.config['continuous']
+
+        try :
+            # Not all environements can be continuous, so we need to handle this case
+            self.env = gym.make(self.env_name, continuous = self.is_continuous)
+        except:
+            self.env = gym.make(self.env_name)
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)

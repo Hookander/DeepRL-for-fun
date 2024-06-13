@@ -1,7 +1,11 @@
 
-env : LunarLander-v2
+env : CarRacing-v2
+
+# Continuous action space for some environments
+continuous : False
+
 trainer : &trainer basic
-network : &network linear
+network : &network cnn
 
 # Logging
 do_wandb : False
