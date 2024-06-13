@@ -1,0 +1,39 @@
+
+training done
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/run.py", line 35, in main
+    trainer.save_model()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/trainers/basic.py", line 173, in save_model
+    yaml.dump(self.config, './data/dumps/config.yaml')
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/__init__.py", line 253, in dump
+    return dump_all([data], stream, Dumper=Dumper, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/__init__.py", line 241, in dump_all
+    dumper.represent(data)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/representer.py", line 28, in represent
+    self.serialize(node)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/serializer.py", line 54, in serialize
+    self.serialize_node(node, None, None)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/serializer.py", line 107, in serialize_node
+    self.serialize_node(key, node, None)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/serializer.py", line 89, in serialize_node
+    self.emit(ScalarEvent(alias, node.tag, implicit, node.value,
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 115, in emit
+    self.state()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 393, in expect_first_block_mapping_key
+    return self.expect_block_mapping_key(first=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 403, in expect_block_mapping_key
+    self.expect_node(mapping=True, simple_key=True)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 244, in expect_node
+    self.expect_scalar()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 268, in expect_scalar
+    self.process_scalar()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 533, in process_scalar
+    self.write_plain(self.analysis.scalar, split)
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/yaml/emitter.py", line 1132, in write_plain
+    self.stream.write(data)
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'write'
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

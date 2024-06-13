@@ -1,5 +1,5 @@
 
-env : CartPole-v1
+env : LunarLander-v2
 trainer : &trainer basic
 network : &network linear
 

@@ -9,7 +9,7 @@ from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
 import wandb
-
+import yaml
 
 
 
@@ -57,10 +57,7 @@ class BasicTrainer(BaseTrainer):
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
 
-    def check_env_model_compatibility(self):
-        if isinstance(self.networkClass, CNN):
-            if len(self.env.observation_space.shape) == 1:
-                raise ValueError("The environment is not compatible with the CNN model")
+
 
     def select_action(self, state):
         
@@ -75,8 +72,8 @@ class BasicTrainer(BaseTrainer):
                 # found, so we pick action with the larger expected reward.
                 return self.policy_net(state).max(1).indices.view(1, 1)
         else:
-            return torch.tensor([[self.env.action_space.sample()]], device=self.device, dtype=torch.long)
-
+            return torch.tensor([[self.env.action_space.sample()]], device=self.device)
+            #return torch.tensor([[self.env.action_space.sample()]], device=self.device, dtype=torch.long)
 
     def optimize_model(self):
         if len(self.memory) < self.batch_size:
@@ -134,6 +131,7 @@ class BasicTrainer(BaseTrainer):
 
             for t in count():
                 action = self.select_action(state)
+                # print(action.flatten().numpy())
                 observation, reward, terminated, truncated, _ = self.env.step(action.item())
                 total_reward += reward
                 reward = torch.tensor([reward], device=self.device)
@@ -169,7 +167,11 @@ class BasicTrainer(BaseTrainer):
     
     def save_model(self, path = "data/models/"):
         if self.do_wandb:
-            run_name = wandb.run.name
-            torch.save(self.policy_net.state_dict(), path + run_name + '.pth')
+            with open('./data/dumps/config.yaml', 'w') as file:
+                yaml.dump(self.config, file)
+            torch.save(self.policy_net.state_dict(), './data/dumps/model.pth')
+            wandb.save('./data/dumps/config.yaml')
+            wandb.save('./data/dumps/model.pth')
+
         else:
             torch.save(self.policy_net.state_dict(), path + self.env_name + '_policy_net.pth')

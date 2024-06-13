@@ -1,0 +1,61 @@
+wandb_version: 1
+
+env:
+  desc: null
+  value: CartPole-v1
+trainer:
+  desc: null
+  value: basic
+network:
+  desc: null
+  value: linear
+do_wandb:
+  desc: null
+  value: true
+wandb_config:
+  desc: null
+  value:
+    project: DeepRL_test
+trainers:
+  desc: null
+  value:
+    num_episodes: 100
+    batch_size: 64
+    gamma: 0.99
+    tau: 0.001
+    learning_rate: 0.001
+    epsilon_start: 0.9
+    epsilon_end: 0.1
+    epsilon_decay: 0.999
+networks:
+  desc: null
+  value:
+    layers:
+    - 128
+    - 128
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.5
+    cli_version: 0.17.1
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1718226105
+    t:
+      1:
+      - 1
+      - 50
+      - 55
+      2:
+      - 1
+      - 50
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.11.5
+      5: 0.17.1
+      8:
+      - 5
+      13: darwin-x86_64

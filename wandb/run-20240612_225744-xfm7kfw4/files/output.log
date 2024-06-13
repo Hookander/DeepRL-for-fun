@@ -1,0 +1,11 @@
+
+training done
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/run.py", line 35, in main
+    trainer.save_model()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/trainers/basic.py", line 172, in save_model
+    with open('./data/dumps/config.yaml', 'w') as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: './data/dumps/config.yaml'
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

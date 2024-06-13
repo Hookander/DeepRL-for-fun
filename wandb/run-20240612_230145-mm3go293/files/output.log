@@ -1,0 +1,51 @@
+
+training done
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/run.py", line 35, in main
+    trainer.save_model()
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/trainers/basic.py", line 174, in save_model
+    scripted_model = torch.jit.script(self.policy_net)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_script.py", line 1338, in script
+    return torch.jit._recursive.create_script_module(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 555, in create_script_module
+    concrete_type = get_module_concrete_type(nn_module, share_types)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 504, in get_module_concrete_type
+    concrete_type = concrete_type_store.get_or_create_concrete_type(nn_module)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 436, in get_or_create_concrete_type
+    concrete_type_builder = infer_concrete_type_builder(nn_module)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 285, in infer_concrete_type_builder
+    sub_concrete_type = get_module_concrete_type(item, share_types)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 504, in get_module_concrete_type
+    concrete_type = concrete_type_store.get_or_create_concrete_type(nn_module)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 436, in get_or_create_concrete_type
+    concrete_type_builder = infer_concrete_type_builder(nn_module)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 285, in infer_concrete_type_builder
+    sub_concrete_type = get_module_concrete_type(item, share_types)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 504, in get_module_concrete_type
+    concrete_type = concrete_type_store.get_or_create_concrete_type(nn_module)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 436, in get_or_create_concrete_type
+    concrete_type_builder = infer_concrete_type_builder(nn_module)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 329, in infer_concrete_type_builder
+    name, _get_valid_constant(name, value, type(nn_module).__name__)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balthazarmartin/Documents/Dev/DeepRL_test/.venv/lib/python3.11/site-packages/torch/jit/_recursive.py", line 142, in _get_valid_constant
+    raise TypeError(
+TypeError:
+'numpy.int64' object in attribute 'Linear.out_features' is not a valid constant.
+Valid constants are:
+1. a nn.ModuleList
+2. a value of type {bool, float, int, str, NoneType, torch.device, torch.layout, torch.dtype}
+3. a list or tuple of (2)
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
