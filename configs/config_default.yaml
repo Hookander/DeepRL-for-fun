@@ -8,7 +8,7 @@ trainer : &trainer basic
 network : &network cnn
 
 # Logging
-do_wandb : False
+do_wandb : True
 wandb_config:
   project : DeepRL_test
 

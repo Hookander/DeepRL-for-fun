@@ -1,0 +1,17 @@
+run.py:19: UserWarning: 
+The version_base parameter is not specified.
+Please specify a compatability version level, or None.
+Will assume defaults for version 1.1
+  @hydra.main(config_path="configs", config_name="config_default.yaml")
+/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
+See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
+  ret = run_job(
+wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.1 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.3
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240613_095909-bggf3bje
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run skilled-bee-13
+wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/bggf3bje

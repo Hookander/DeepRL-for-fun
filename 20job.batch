@@ -7,10 +7,10 @@
 #SBATCH --mail-user=scrapypi@gmail.com
 
 ## For partition: either prod10, prod 20, prod 40 or prod80
-#SBATCH --partition=prod10
+#SBATCH --partition=prod20
 
 ## For gres: either 1g.10gb:[1:10] for prod10, 2g.20gb:[1:4] for prod20, 3g.40gb:1 for prod40 or A100.80gb for prod80.
-#SBATCH --gres=gpu:1g.10gb:1
+#SBATCH --gres=gpu:2g.20gb:1
 
 ## For ntasks and cpus: total requested cpus (ntasks * cpus-per-task) must be in [1: 4 * nMIG] with nMIG = nb_1g.10gb | 2 * nb_2g.20gb | 4 * nb_3g.40gb | 8 * nb_A100.80gb
 #SBATCH --ntasks=1
