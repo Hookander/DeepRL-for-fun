@@ -1,5 +1,5 @@
 
-env : CartPole-v1
+env : LunarLander-v2
 
 # Continuous action space for some environments
 continuous : False
@@ -8,7 +8,7 @@ trainer : &trainer parallel
 network : &network linear
 
 number_of_repeats : 2
-number_of_environments : 5
+number_of_environments : 4
 
 # Logging
 do_wandb : True

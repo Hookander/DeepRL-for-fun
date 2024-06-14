@@ -28,7 +28,7 @@ class Parallelized_DQN(BaseTrainer):
 
         print(self.config_trainer)
         self.env_name = config['env']
-        self.num_env = 5 #config['number_of_environments']
+        self.num_env = config['number_of_environments']
         self.number_of_repeats = self.config['number_of_repeats']
 
         self.num_episodes = self.config_trainer['num_episodes'] #1000
@@ -89,7 +89,7 @@ class Parallelized_DQN(BaseTrainer):
                     actions.append(self.policy_net(state).max(1).indices.view(1, 1))
             else:
                 actions.append(torch.tensor([[self.env.action_space.sample()]], device=self.device))
-        return np.array(actions)
+        return actions
 
     def optimize_model(self):
         if len(self.memory) < self.batch_size:
@@ -147,11 +147,11 @@ class Parallelized_DQN(BaseTrainer):
 
             for t in count():
                 actions = self.select_action(states)
-                actions = actions.squeeze(2).squeeze(1)
 
+                actions = [actions[i].item() for i in range(len(actions))]
                 observations, rewards, terminateds, truncateds, _ = self.envs.step(actions)
                 total_reward += np.mean(rewards)
-                rewards = np.array([torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))])
+                rewards = [torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))]
 
 
                 done = [terminateds[i] or truncateds[i] for i in range(len(terminateds))]
@@ -194,7 +194,7 @@ class Parallelized_DQN(BaseTrainer):
     def save_model(self, path = "data/models/"):
         if self.do_wandb:
             path = path + str(wandb.run.name)
-            os.mkdir(ath)
+            os.mkdir(path)
             config_path = path + "/config.yaml"
             model_path = path + "/model.pth"
             with open(config_path, 'w') as file:

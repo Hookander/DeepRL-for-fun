@@ -10,8 +10,19 @@ wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` 
 wandb: wandb version 0.17.1 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240613_095909-bggf3bje
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240614_144841-bb1vkqjb
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run skilled-bee-13
+wandb: Syncing run neat-glitter-26
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/bggf3bje
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/bb1vkqjb
+wandb: - 0.150 MB of 0.150 MB uploadedwandb: \ 0.150 MB of 0.154 MB uploadedwandb: | 0.150 MB of 0.154 MB uploadedwandb: 
+wandb: Run history:
+wandb: total_reward ▁█
+wandb: 
+wandb: Run summary:
+wandb: total_reward -1.21863
+wandb: 
+wandb: 🚀 View run neat-glitter-26 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/bb1vkqjb
+wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE4NTcxNjIyNA==/version_details/v9
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 2 other file(s)
+wandb: Find logs at: ./wandb/run-20240614_144841-bb1vkqjb/logs
