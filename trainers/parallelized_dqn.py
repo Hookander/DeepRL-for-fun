@@ -106,13 +106,14 @@ class Parallelized_DQN(BaseTrainer):
         non_final_next_states = torch.cat([s for s in batch.next_state
                                                     if s is not None])
         state_batch = torch.cat(batch.state)
-        action_batch = torch.cat(batch.action)
+        action_batch = torch.cat(batch.action).unsqueeze(-1)
         reward_batch = torch.cat(batch.reward)
 
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken. These are the actions which would've been taken
         # for each batch state according to policy_net
-        state_action_values = self.policy_net(state_batch).gather(1, action_batch)
+        out = self.policy_net(state_batch)
+        state_action_values = out.gather(1, action_batch)
 
         # Compute V(s_{t+1}) for all next states.
         # Expected values of actions for non_final_next_states are computed based
@@ -169,7 +170,7 @@ class Parallelized_DQN(BaseTrainer):
                 so we unwrap the states, actions, ...
                 """
                 for i in range(len(states)):
-                    self.memory.push(states[i], torch.tensor(actions[i]), next_states[i], rewards[i])
+                    self.memory.push(states[i], torch.tensor([actions[i]]), next_states[i], rewards[i])
 
                 # Move to the next state
                 states = next_states
