@@ -46,7 +46,6 @@ class RepeatActionV0(
         if self.executed_repeats >= self.number_of_repeats:
             self.executed_repeats = 0
             self.last_action = action
-            print("new action")
             return action
         if (
             self.last_action is not None
@@ -54,7 +53,6 @@ class RepeatActionV0(
         ):
             action = self.last_action
             self.executed_repeats += 1
-            print('repeat')
 
 
         self.last_action = action

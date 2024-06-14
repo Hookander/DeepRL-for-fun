@@ -1,14 +1,17 @@
 
-env : CarRacing-v2
+env : CartPole-v1
 
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer basic
-network : &network cnn
+trainer : &trainer parallel
+network : &network linear
+
+number_of_repeats : 2
+number_of_environments : 5
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 

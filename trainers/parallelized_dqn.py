@@ -2,10 +2,10 @@ import torch
 import torch.optim as optim
 import math
 import gymnasium as gym
+import numpy as np
 from networks.linear import *
 from src.utils import *
 from itertools import count
-import torch
 from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
@@ -15,7 +15,7 @@ import yaml
 
 
 
-class BasicTrainer(BaseTrainer):
+class Parallelized_DQN(BaseTrainer):
 
     def __init__(self, config : Dict, network : Type[BaseNet]):
 
@@ -27,6 +27,7 @@ class BasicTrainer(BaseTrainer):
 
         print(self.config_trainer)
         self.env_name = config['env']
+        self.num_env = 5 #config['number_of_environments']
         self.number_of_repeats = self.config['number_of_repeats']
 
         self.num_episodes = self.config_trainer['num_episodes'] #1000
@@ -46,13 +47,17 @@ class BasicTrainer(BaseTrainer):
 
         self.is_continuous = self.config['continuous']
 
-        try :
+        #try :
             # Not all environements can be continuous, so we need to handle this case
-            self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        except:
-            self.env = gym.make(self.env_name)
-        
-        self.env = RepeatActionV0(self.env, self.number_of_repeats)
+        #    self.env = gym.make(self.env_name, continuous = self.is_continuous)
+        #except:
+        #    self.env = gym.make(self.env_name)
+
+        self.envs = gym.make_vec(self.env_name, self.num_env)
+        self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
+
+        # To get the observation aned action spaces
+        self.env = gym.make(self.env_name)
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
@@ -67,21 +72,23 @@ class BasicTrainer(BaseTrainer):
 
 
 
-    def select_action(self, state : torch.Tensor):
+    def select_action(self, states : [torch.Tensor]):
         
-        sample = random.random()
+        samples = [random.random() for _ in range(len(states))]
         eps_threshold = self.eps_end + (self.eps_start - self.eps_end) * \
             math.exp(-1. * self.steps_done / self.eps_decay)
         self.steps_done += 1
-        if sample > eps_threshold:
-            with torch.no_grad():
-                # t.max(1) will return the largest column value of each row.
-                # second column on max result is index of where max element was
-                # found, so we pick action with the larger expected reward.
-                return self.policy_net(state).max(1).indices.view(1, 1)
-        else:
-            return torch.tensor([[self.env.action_space.sample()]], device=self.device)
-            #return torch.tensor([[self.env.action_space.sample()]], device=self.device, dtype=torch.long)
+        actions = []
+        for i, state in enumerate(states):
+            if samples[i] > eps_threshold:
+                with torch.no_grad():
+                    # t.max(1) will return the largest column value of each row.
+                    # second column on max result is index of where max element was
+                    # found, so we pick action with the larger expected reward.
+                    actions.append(self.policy_net(state).max(1).indices.view(1, 1))
+            else:
+                actions.append(torch.tensor([[self.env.action_space.sample()]], device=self.device))
+        return np.array(actions)
 
     def optimize_model(self):
         if len(self.memory) < self.batch_size:
@@ -133,28 +140,38 @@ class BasicTrainer(BaseTrainer):
         for i_episode in range(self.num_episodes):
             total_reward = 0
             # Initialize the environment and get its state
-            state, info = self.env.reset()
+            states, infos = self.envs.reset()
             
-            state = torch.tensor(state, dtype=torch.float32, device=self.device).unsqueeze(0)
+            states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
 
             for t in count():
-                action = self.select_action(state)
-                # print(action.flatten().numpy())
-                observation, reward, terminated, truncated, _ = self.env.step(action.item())
-                total_reward += reward
-                reward = torch.tensor([reward], device=self.device)
-                done = terminated or truncated
+                actions = self.select_action(states)
+                actions = actions.squeeze(2).squeeze(1)
 
-                if terminated:
-                    next_state = None
-                else:
-                    next_state = torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0)
+                observations, rewards, terminateds, truncateds, _ = self.envs.step(actions)
+                total_reward += np.mean(rewards)
+                rewards = np.array([torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))])
 
-                # Store the transition in memory
-                self.memory.push(state, action, next_state, reward)
+
+                done = [terminateds[i] or truncateds[i] for i in range(len(terminateds))]
+
+                next_states = []
+                for i, observation in enumerate(observations):
+                    if done[i]:
+                        next_states.append(None)
+                    else:
+                        next_states.append(torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0))
+
+
+                """
+                Store the transitions in memory
+                so we unwrap the states, actions, ...
+                """
+                for i in range(len(states)):
+                    self.memory.push(states[i], torch.tensor(actions[i]), next_states[i], rewards[i])
 
                 # Move to the next state
-                state = next_state
+                states = next_states
 
                 # Perform one step of the optimization (on the policy network)
                 self.optimize_model()
