@@ -7,7 +7,7 @@ continuous : False
 trainer : &trainer parallel
 network : &network linear
 
-number_of_repeats : 2
+number_of_repeats : 0
 number_of_environments : 4
 
 # Logging
