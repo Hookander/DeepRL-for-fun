@@ -12,6 +12,7 @@ from networks.base_net import BaseNet
 from src.wrappers.repeat_wrapper import RepeatActionV0
 import wandb
 import yaml
+import os
 
 
 
@@ -192,11 +193,15 @@ class Parallelized_DQN(BaseTrainer):
     
     def save_model(self, path = "data/models/"):
         if self.do_wandb:
-            with open('./data/dumps/config.yaml', 'w') as file:
+            path = path + str(wandb.run.name)
+            os.mkdir(ath)
+            config_path = path + "/config.yaml"
+            model_path = path + "/model.pth"
+            with open(config_path, 'w') as file:
                 yaml.dump(self.config, file)
-            torch.save(self.policy_net.state_dict(), './data/dumps/model.pth')
-            wandb.save('./data/dumps/config.yaml')
-            wandb.save('./data/dumps/model.pth')
+            torch.save(self.policy_net.state_dict(), model_path)
+            wandb.save(config_path)
+            wandb.save(model_path)
 
         else:
             torch.save(self.policy_net.state_dict(), path + self.env_name + '_policy_net.pth')

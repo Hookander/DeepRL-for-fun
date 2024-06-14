@@ -32,7 +32,7 @@ def main(config: DictConfig):
     trainer = TrainerClass(config, ModelClass)
 
     trainer.train()
-    #trainer.save_model()
+    trainer.save_model()
 
 if __name__ == "__main__":
     main()
