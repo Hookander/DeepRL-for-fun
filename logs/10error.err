@@ -10,30 +10,42 @@ wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` 
 wandb: wandb version 0.17.1 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240614_154157-mvme5f7r
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240617_201352-vsadh850
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run eager-pine-28
+wandb: Syncing run jumping-bush-37
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/mvme5f7r
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/vsadh850
 Error executing job with overrides: []
 Traceback (most recent call last):
   File "run.py", line 34, in main
     trainer.train()
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 178, in train
-    self.optimize_model()
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 109, in optimize_model
-    action_batch = torch.cat(batch.action)
-RuntimeError: zero-dimensional tensor (at position 0) cannot be concatenated
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 150, in train
+    actions = self.select_action(states)
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 89, in select_action
+    actions.append(self.policy_net(state).max(1).indices.view(1, 1))
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/networks/linear.py", line 31, in forward
+    return self.model(x)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/flatten.py", line 49, in forward
+    return input.flatten(self.start_dim, self.end_dim)
+AttributeError: 'NoneType' object has no attribute 'flatten'
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
-wandb: - 0.015 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.015 MB uploadedwandb: | 0.015 MB of 0.015 MB uploadedwandb: / 0.020 MB of 0.024 MB uploaded (0.002 MB deduped)wandb: - 0.024 MB of 0.024 MB uploaded (0.002 MB deduped)wandb: 
-wandb: Run history:
-wandb: total_reward █▇▃▁▅▃▃▂▇▅▅▄▃▃▆
-wandb: 
-wandb: Run summary:
-wandb: total_reward -0.09246
-wandb: 
-wandb: 🚀 View run eager-pine-28 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/mvme5f7r
-wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE4NTcxNjIyNA==/version_details/v10
+wandb: - 0.015 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.015 MB uploadedwandb: | 0.015 MB of 0.015 MB uploadedwandb: / 0.020 MB of 0.025 MB uploaded (0.002 MB deduped)wandb: - 0.025 MB of 0.025 MB uploaded (0.002 MB deduped)wandb: 🚀 View run jumping-bush-37 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/vsadh850
+wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v3
 wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240614_154157-mvme5f7r/logs
+wandb: Find logs at: ./wandb/run-20240617_201352-vsadh850/logs
+slurmstepd: error: *** JOB 11363 ON dgxa100 CANCELLED AT 2024-06-17T20:15:02 ***

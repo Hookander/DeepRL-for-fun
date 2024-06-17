@@ -154,8 +154,8 @@ class Parallelized_DQN(BaseTrainer):
                 total_reward += np.mean(rewards)
                 rewards = [torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))]
 
-
-                done = [terminateds[i] or truncateds[i] for i in range(len(terminateds))]
+                # determine of all episodes are done
+                done = all(terminateds)
 
                 next_states = []
                 for i, observation in enumerate(observations):
