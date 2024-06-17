@@ -11,7 +11,7 @@ number_of_repeats : 0
 number_of_environments : 4
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 

@@ -73,22 +73,23 @@ class Parallelized_DQN(BaseTrainer):
 
 
 
-    def select_action(self, states : [torch.Tensor]):
+    def select_action(self, states : [torch.Tensor], running_env_mask : [int]):
         
         samples = [random.random() for _ in range(len(states))]
         eps_threshold = self.eps_end + (self.eps_start - self.eps_end) * \
             math.exp(-1. * self.steps_done / self.eps_decay)
         self.steps_done += 1
-        actions = []
+        actions = [torch.tensor([0], device = self.device) for i in range(len(states))]
         for i, state in enumerate(states):
-            if samples[i] > eps_threshold:
-                with torch.no_grad():
-                    # t.max(1) will return the largest column value of each row.
-                    # second column on max result is index of where max element was
-                    # found, so we pick action with the larger expected reward.
-                    actions.append(self.policy_net(state).max(1).indices.view(1, 1))
-            else:
-                actions.append(torch.tensor([[self.env.action_space.sample()]], device=self.device))
+            if running_env_mask[i] == 1:
+                if samples[i] > eps_threshold:
+                    with torch.no_grad():
+                        # t.max(1) will return the largest column value of each row.
+                        # second column on max result is index of where max element was
+                        # found, so we pick action with the larger expected reward.
+                        actions[i] = self.policy_net(state).max(1).indices.view(1, 1)
+                else:
+                    actions[i] = torch.tensor([[self.env.action_space.sample()]], device=self.device)
         return actions
 
     def optimize_model(self):
@@ -140,6 +141,7 @@ class Parallelized_DQN(BaseTrainer):
     def train(self):
 
         for i_episode in range(self.num_episodes):
+            running_env_mask = np.array([1 for _ in range(self.num_env)])
             total_reward = 0
             # Initialize the environment and get its state
             states, infos = self.envs.reset()
@@ -147,7 +149,14 @@ class Parallelized_DQN(BaseTrainer):
             states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
 
             for t in count():
-                actions = self.select_action(states)
+                """
+                #! problem : doesnt stop when next_state=None (bc all the environnements need to be terminated right know)
+                -> call the model with None -> error
+
+                -> we use a mask [], a 0 in pos i means the i-th environnement is terminated
+
+                """
+                actions = self.select_action(states, running_env_mask)
 
                 actions_items = [actions[i].item() for i in range(len(actions))]
                 observations, rewards, terminateds, truncateds, _ = self.envs.step(actions_items)
@@ -170,7 +179,17 @@ class Parallelized_DQN(BaseTrainer):
                 so we unwrap the states, actions, ...
                 """
                 for i in range(len(states)):
-                    self.memory.push(states[i], actions[i], next_states[i], rewards[i])
+                    if running_env_mask[i]:
+                        self.memory.push(states[i], actions[i], next_states[i], rewards[i])
+
+                """
+                We update this after updating the memory to allow it to contain the final transistions 
+                of some simulations, but by making sure those transisitons aren't re-added afterwards.
+                """
+                for i in range(len(terminateds)):
+                    if terminateds[i]:
+                        running_env_mask[i] = 0
+
 
                 # Move to the next state
                 states = next_states
