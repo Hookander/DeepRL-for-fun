@@ -4,7 +4,7 @@ env : LunarLander-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer basic
+trainer : &trainer parallel
 network : &network linear
 
 number_of_repeats : 0

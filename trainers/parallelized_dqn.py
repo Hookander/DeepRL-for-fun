@@ -106,7 +106,7 @@ class Parallelized_DQN(BaseTrainer):
         non_final_next_states = torch.cat([s for s in batch.next_state
                                                     if s is not None])
         state_batch = torch.cat(batch.state)
-        action_batch = torch.cat(batch.action).unsqueeze(-1)
+        action_batch = torch.cat(batch.action)
         reward_batch = torch.cat(batch.reward)
 
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
@@ -149,8 +149,8 @@ class Parallelized_DQN(BaseTrainer):
             for t in count():
                 actions = self.select_action(states)
 
-                actions = [actions[i].item() for i in range(len(actions))]
-                observations, rewards, terminateds, truncateds, _ = self.envs.step(actions)
+                actions_items = [actions[i].item() for i in range(len(actions))]
+                observations, rewards, terminateds, truncateds, _ = self.envs.step(actions_items)
                 total_reward += np.mean(rewards)
                 rewards = [torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))]
 
@@ -159,7 +159,7 @@ class Parallelized_DQN(BaseTrainer):
 
                 next_states = []
                 for i, observation in enumerate(observations):
-                    if done[i]:
+                    if terminateds[i]:
                         next_states.append(None)
                     else:
                         next_states.append(torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0))
@@ -170,7 +170,7 @@ class Parallelized_DQN(BaseTrainer):
                 so we unwrap the states, actions, ...
                 """
                 for i in range(len(states)):
-                    self.memory.push(states[i], torch.tensor([actions[i]]), next_states[i], rewards[i])
+                    self.memory.push(states[i], actions[i], next_states[i], rewards[i])
 
                 # Move to the next state
                 states = next_states
