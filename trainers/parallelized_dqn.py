@@ -48,17 +48,19 @@ class Parallelized_DQN(BaseTrainer):
 
         self.is_continuous = self.config['continuous']
 
-        #try :
+        try :
             # Not all environements can be continuous, so we need to handle this case
-        #    self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        #except:
-        #    self.env = gym.make(self.env_name)
+            self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
+            self.env = gym.make(self.env_name, continuous = self.is_continuous)
+        except:
+            self.envs = gym.make_vec(self.env_name, self.num_env)
+            self.env = gym.make(self.env_name)
 
-        self.envs = gym.make_vec(self.env_name, self.num_env)
-        self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
+        #self.envs = gym.make_vec(self.env_name, self.num_env)
+        #self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
 
         # To get the observation aned action spaces
-        self.env = gym.make(self.env_name)
+        #self.env = gym.make(self.env_name)
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
@@ -148,6 +150,8 @@ class Parallelized_DQN(BaseTrainer):
         states, infos = self.envs.reset()
         running_env_mask = [1 for _ in range(self.num_env)]
         states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
+
+    
         cpt = 0
         for t in count():
             """
