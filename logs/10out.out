@@ -21,6 +21,5 @@ networks:
   layers:
   - 128
   - 128
-  - 128
 
 {'num_episodes': 1000, 'batch_size': 64, 'gamma': 0.99, 'tau': 0.001, 'learning_rate': 0.001, 'epsilon_start': 0.9, 'epsilon_end': 0.1, 'epsilon_decay': 0.999}
