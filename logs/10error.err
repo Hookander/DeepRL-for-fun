@@ -10,9 +10,25 @@ wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` 
 wandb: wandb version 0.17.2 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240617_211131-uxl4m4yv
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240618_213633-u7l9jame
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run wild-snowflake-42
+wandb: Syncing run apricot-smoke-59
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/uxl4m4yv
-slurmstepd: error: *** JOB 11369 ON dgxa100 CANCELLED AT 2024-06-17T21:12:31 ***
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/u7l9jame
+/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py:92: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:275.)
+  actions[i] = torch.tensor([[self.env.action_space.sample()]], device=self.device)
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "run.py", line 34, in main
+    trainer.train()
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 162, in train
+    actions_items = [actions[i].item() for i in range(len(actions))]
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 162, in <listcomp>
+    actions_items = [actions[i].item() for i in range(len(actions))]
+RuntimeError: a Tensor with 3 elements cannot be converted to Scalar
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+wandb: - 0.015 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.019 MB uploadedwandb: | 0.015 MB of 0.019 MB uploadedwandb: 🚀 View run apricot-smoke-59 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/u7l9jame
+wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v7
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240618_213633-u7l9jame/logs

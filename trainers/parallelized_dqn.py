@@ -139,76 +139,80 @@ class Parallelized_DQN(BaseTrainer):
         self.optimizer.step()
     
     def train(self):
+        """
+        
+        """
 
-        for i_episode in range(self.num_episodes):
-            running_env_mask = np.array([1 for _ in range(self.num_env)])
-            total_reward = 0
-            # Initialize the environment and get its state
-            states, infos = self.envs.reset()
-            
-            states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
+        total_reward = 0
+        # Initialize the environment and get its state
+        states, infos = self.envs.reset()
+        running_env_mask = [1 for _ in range(self.num_env)]
+        states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
+        cpt = 0
+        for t in count():
+            """
+            #! problem : doesnt stop when next_state=None (bc all the environnements need to be terminated right know)
+            -> call the model with None -> error
 
-            for t in count():
-                """
-                #! problem : doesnt stop when next_state=None (bc all the environnements need to be terminated right know)
-                -> call the model with None -> error
+            -> we use a mask [], a 0 in pos i means the i-th environnement is terminated
 
-                -> we use a mask [], a 0 in pos i means the i-th environnement is terminated
+            """
+            actions = self.select_action(states, running_env_mask)
 
-                """
-                actions = self.select_action(states, running_env_mask)
+            actions_items = [actions[i].item() for i in range(len(actions))]
+            observations, rewards, terminateds, truncateds, _ = self.envs.step(actions_items)
 
-                actions_items = [actions[i].item() for i in range(len(actions))]
-                observations, rewards, terminateds, truncateds, _ = self.envs.step(actions_items)
-                total_reward += np.mean(rewards)
-                rewards = [torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))]
+            #the envs that were done are reset
+            #running_env_mask = [1 if mask == 0 or mask == 1 else 0 for mask in running_env_mask]
 
-                # determine of all episodes are done (truncated or terminated)
-                done = all([terminateds[i] or truncateds[i] for i in range(len(terminateds))])
+            total_reward += rewards[0] # we only log the reward of the first environnement (the others are the same)
+            rewards = [torch.tensor([rewards[i]], device=self.device) for i in range(len(rewards))]
 
-                next_states = []
-                for i, observation in enumerate(observations):
-                    if terminateds[i]:
-                        next_states.append(None)
-                    else:
-                        next_states.append(torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0))
-
-
-                """
-                Store the transitions in memory
-                so we unwrap the states, actions, ...
-                """
-                for i in range(len(states)):
-                    if running_env_mask[i]:
-                        self.memory.push(states[i], actions[i], next_states[i], rewards[i])
-
-                """
-                We update this after updating the memory to allow it to contain the final transistions 
-                of some simulations, but by making sure those transisitons aren't re-added afterwards.
-                """
-                for i in range(len(terminateds)):
-                    if terminateds[i]:
-                        running_env_mask[i] = 0
+            # determine of all episodes are done (truncated or terminated)<
+            next_states = []
+            for i, observation in enumerate(observations):
+                if terminateds[i]:
+                    next_states.append(None)
+                else:
+                    next_states.append(torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0))
 
 
-                # Move to the next state
-                states = next_states
+            """
+            Store the transitions in memory
+            so we unwrap the states, actions, ...
+            """
+            for i in range(len(states)):
+                if running_env_mask[i]:
+                    self.memory.push(states[i], actions[i], next_states[i], rewards[i])
+            """
+            We update this after updating the memory to allow it to contain the final transistions 
+            of some simulations, but by making sure those transisitons aren't re-added afterwards.
+            """
+            running_env_mask = [0 if terminateds[i] or truncateds[i] else 1 for i in range(len(terminateds))]
 
-                # Perform one step of the optimization (on the policy network)
-                self.optimize_model()
 
-                # Soft update of the target network's weights
-                # θ′ ← τ θ + (1 −τ )θ′
-                target_net_state_dict = self.target_net.state_dict()
-                policy_net_state_dict = self.policy_net.state_dict()
-                for key in policy_net_state_dict:
-                    target_net_state_dict[key] = policy_net_state_dict[key]*self.tau + target_net_state_dict[key]*(1-self.tau)
-                self.target_net.load_state_dict(target_net_state_dict)
+            # Move to the next state
+            states = next_states
 
-                if done:
-                    break
-            if self.do_wandb:
+            # Perform one step of the optimization (on the policy network)
+            self.optimize_model()
+
+            # Soft update of the target network's weights
+            # θ′ ← τ θ + (1 −τ )θ′
+            target_net_state_dict = self.target_net.state_dict()
+            policy_net_state_dict = self.policy_net.state_dict()
+            for key in policy_net_state_dict:
+                target_net_state_dict[key] = policy_net_state_dict[key]*self.tau + target_net_state_dict[key]*(1-self.tau)
+            self.target_net.load_state_dict(target_net_state_dict)
+
+
+            if self.do_wandb and (terminateds[0] or truncateds[0]):
                 wandb.log({'total_reward': total_reward})
+                total_reward = 0
+            cpt += sum(terminateds)
+
+            if cpt >= self.num_episodes:
+                break
         print("training done")
     
     def save_model(self, path = "data/models/"):
