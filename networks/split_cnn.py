@@ -4,10 +4,20 @@ import torch.nn.functional as F
 from src.utils import nb_from_space
 from networks.base_net import BaseNet
 
-class CNN(BaseNet):
+
+"""
+    A Network designed to work with the CarRacing-v2 environment.
+    The image give as input contains 2 elements:
+     - The track with the car and the road 
+     - The HUD with the speed, RPM, etc at the botton of the image.
+    With this network, we separate the two and feed it to 2 separate cnns,
+    so they would both have to focus on 1 job each.
+"""
+
+class SplitCNN(BaseNet):
 
     def __init__(self, observation_space, action_space, config):
-        super(CNN, self).__init__()
+        super(SplitCNN, self).__init__()
 
         self.n_observations = nb_from_space(observation_space)
         self.n_actions = nb_from_space(action_space)
@@ -23,9 +33,17 @@ class CNN(BaseNet):
         self.layer4 = nn.Linear(64*2*2, 256)
         self.layer5 = nn.Linear(256, self.n_actions)
 
+        self.split = 83 # The HUD is 13 pixel tall with an (96, 96, 3) image
+
     def forward(self, x):
 
         x = x.permute(0, 3, 1, 2) # from NHWC to NCHW
+
+        # Split the image in 2
+        x_road = x[:, :, :self.split, :]
+        x_hud = x[:, :, self.split:, :]
+
+
         #print(x.shape)
         x = F.relu(self.layer1(x))
         x = self.maxpool(x)

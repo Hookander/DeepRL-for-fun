@@ -1,4 +1,4 @@
-num_episodes : 10000
+num_episodes : 2000
 batch_size : 64
 gamma : 0.99
 tau : 0.001
