@@ -145,7 +145,7 @@ class BasicTrainer(BaseTrainer):
                 total_reward += reward
                 reward = torch.tensor([reward], device=self.device)
                 done = terminated or truncated
-                print(terminated, truncated, done)
+                #print(terminated, truncated, done)
                 if terminated:
                     next_state = None
                 else:
