@@ -213,7 +213,7 @@ class Parallelized_DQN(BaseTrainer):
             if self.do_wandb and (terminateds[0] or truncateds[0]):
                 wandb.log({'total_reward': total_reward})
                 total_reward = 0
-            cpt += sum(terminateds or truncateds)
+            cpt += list(terminateds).count(True) + list(truncateds).count(True)
             if self.do_wandb:
                 wandb.log({'Episode endings' : cpt})
             if cpt >= self.num_episodes:

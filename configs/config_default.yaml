@@ -4,14 +4,14 @@ env : CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer basic
-network : &network split_cnn
+trainer : &trainer parallel
+network : &network cnn
 
 number_of_repeats : 0
 number_of_environments : 4
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 
