@@ -25,11 +25,33 @@ class SplitCNN(BaseNet):
         if len(observation_space.shape) == 1:
             raise ValueError("Observation space is not an image")
 
-        self.maxpool = nn.MaxPool2d(3)
+        self.maxpool = nn.MaxPool2d(2)
         self.flatten = nn.Flatten()
+        self.relu = nn.ReLU()
+        
+        # The road cnn
         self.layer1 = nn.Conv2d(3, 16, kernel_size=3)
         self.layer2 = nn.Conv2d(16, 32, kernel_size=3)
         self.layer3 = nn.Conv2d(32, 64, kernel_size=3)
+        self.layer4 = nn.Conv2d(64, 128, kernel_size=3)
+        
+        self.road_cnn = nn.Sequential(
+            self.layer1,
+            self.maxpool,
+            self.relu,
+            self.layer2,
+            self.maxpool,
+            self.relu,
+            self.layer3,
+            self.maxpool,
+            self.relu,
+            self.layer4,
+            self.maxpool,
+            self.relu,
+            self.flatten
+        )
+        
+        
         self.layer4 = nn.Linear(64*2*2, 256)
         self.layer5 = nn.Linear(256, self.n_actions)
 
@@ -43,7 +65,9 @@ class SplitCNN(BaseNet):
         x_road = x[:, :, :self.split, :]
         x_hud = x[:, :, self.split:, :]
 
-
+        x_road = self.road_cnn(x_road)
+        print(x_road.shape)
+        """
         #print(x.shape)
         x = F.relu(self.layer1(x))
         x = self.maxpool(x)
@@ -54,5 +78,6 @@ class SplitCNN(BaseNet):
         x = self.flatten(x)
         x = F.relu(self.layer4(x))
         x = self.layer5(x)
+        """
 
         return x
