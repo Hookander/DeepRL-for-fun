@@ -6,29 +6,25 @@ Will assume defaults for version 1.1
 /raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
 See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
   ret = run_job(
+/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/lazy.py:181: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
+  warnings.warn('Lazy modules are a new feature under heavy development '
 wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.17.2 is available!  To upgrade, please run:
+wandb: wandb version 0.17.4 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240618_213633-u7l9jame
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240706_101036-okm9dpqa
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run apricot-smoke-59
+wandb: Syncing run charmed-haze-72
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/u7l9jame
-/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py:92: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:275.)
-  actions[i] = torch.tensor([[self.env.action_space.sample()]], device=self.device)
-Error executing job with overrides: []
-Traceback (most recent call last):
-  File "run.py", line 34, in main
-    trainer.train()
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 162, in train
-    actions_items = [actions[i].item() for i in range(len(actions))]
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 162, in <listcomp>
-    actions_items = [actions[i].item() for i in range(len(actions))]
-RuntimeError: a Tensor with 3 elements cannot be converted to Scalar
-
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
-wandb: - 0.015 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.019 MB uploadedwandb: | 0.015 MB of 0.019 MB uploadedwandb: 🚀 View run apricot-smoke-59 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/u7l9jame
-wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v7
-wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240618_213633-u7l9jame/logs
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/okm9dpqa
+wandb: - 2.270 MB of 2.270 MB uploadedwandb: \ 2.270 MB of 2.270 MB uploadedwandb: | 2.270 MB of 2.274 MB uploadedwandb: 
+wandb: Run history:
+wandb: total_reward ▁
+wandb: 
+wandb: Run summary:
+wandb: total_reward -59.45946
+wandb: 
+wandb: 🚀 View run charmed-haze-72 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/okm9dpqa
+wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v11
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 2 other file(s)
+wandb: Find logs at: ./wandb/run-20240706_101036-okm9dpqa/logs

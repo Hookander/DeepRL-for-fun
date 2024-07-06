@@ -6,6 +6,9 @@ from typing import Dict, Type
 from src.utils import *
 from itertools import count
 from abc import ABC, abstractmethod
+import os
+import wandb
+import yaml
 
 
 
@@ -38,9 +41,18 @@ class BaseTrainer(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
-    def save_model(self):
-        """
-        Saves the model
-        """
-        raise NotImplementedError
+    def save_model(self, path = "data/models/"):
+        if self.do_wandb:
+            path = path + str(wandb.run.name)
+            os.mkdir(path)
+            config_path = path + "/config.yaml"
+            model_path = path + "/model.pth"
+            with open(config_path, 'w') as file:
+                yaml.dump(self.config, file)
+            torch.save(self.policy_net.state_dict(), model_path)
+            wandb.save(config_path)
+            wandb.save(model_path)
+
+        else:
+            torch.save(self.policy_net.state_dict(), path + self.env_name + '_policy_net.pth')
+        print('Model saved at : ' + path + self.env_name + '_policy_net.pth')

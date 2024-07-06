@@ -1,15 +1,15 @@
 Configuration used :
 env: CarRacing-v2
 continuous: false
-trainer: parallel
-network: cnn
+trainer: basic
+network: split_cnn
 number_of_repeats: 0
 number_of_environments: 4
 do_wandb: true
 wandb_config:
   project: DeepRL_test
 trainers:
-  num_episodes: 10000
+  num_episodes: 1
   batch_size: 64
   gamma: 0.99
   tau: 0.001
@@ -19,4 +19,6 @@ trainers:
   epsilon_decay: 0.999
 networks: {}
 
-{'num_episodes': 10000, 'batch_size': 64, 'gamma': 0.99, 'tau': 0.001, 'learning_rate': 0.001, 'epsilon_start': 0.9, 'epsilon_end': 0.1, 'epsilon_decay': 0.999}
+{'num_episodes': 1, 'batch_size': 64, 'gamma': 0.99, 'tau': 0.001, 'learning_rate': 0.001, 'epsilon_start': 0.9, 'epsilon_end': 0.1, 'epsilon_decay': 0.999}
+training done
+Model saved at : data/models/charmed-haze-72CarRacing-v2_policy_net.pth

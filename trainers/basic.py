@@ -173,14 +173,3 @@ class BasicTrainer(BaseTrainer):
             if self.do_wandb:
                 wandb.log({'total_reward': total_reward})
         print("training done")
-    
-    def save_model(self, path = "data/models/"):
-        if self.do_wandb:
-            with open('./data/dumps/config.yaml', 'w') as file:
-                yaml.dump(self.config, file)
-            torch.save(self.policy_net.state_dict(), './data/dumps/model.pth')
-            wandb.save('./data/dumps/config.yaml')
-            wandb.save('./data/dumps/model.pth')
-
-        else:
-            torch.save(self.policy_net.state_dict(), path + self.env_name + '_policy_net.pth')
