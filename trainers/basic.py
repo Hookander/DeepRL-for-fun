@@ -171,5 +171,5 @@ class BasicTrainer(BaseTrainer):
                 if done:
                     break
             if self.do_wandb:
-                wandb.log({'total_reward': total_reward})
+                wandb.log({'total_reward': total_reward, 'episode': i_episode, 'epsilon': self.eps_end + (self.eps_start - self.eps_end) * math.exp(-1. * self.steps_done / self.eps_decay)})
         print("training done")

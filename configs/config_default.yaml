@@ -5,7 +5,7 @@ env : CarRacing-v2
 continuous : False
 
 trainer : &trainer basic
-network : &network split_cnn
+network : &network cnn
 
 number_of_repeats : 0
 number_of_environments : 4
