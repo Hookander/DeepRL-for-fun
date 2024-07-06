@@ -4,11 +4,11 @@ env : CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer basic
-network : &network cnn
+trainer : &trainer parallel
+network : &network split_cnn
 
-number_of_repeats : 0
-number_of_environments : 4
+number_of_repeats : 1
+number_of_environments : 8
 
 # Logging
 do_wandb : True
