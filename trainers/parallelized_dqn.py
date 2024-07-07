@@ -151,6 +151,8 @@ class Parallelized_DQN(BaseTrainer):
         running_env_mask = [1 for _ in range(self.num_env)]
         states = [torch.tensor(states[i], dtype=torch.float32, device=self.device).unsqueeze(0) for i in range(len(states))]
 
+        # We keep track of the number of episodes that ended in env_0 for wdb logging
+        epis_0_endings = 0
     
         cpt = 0
         for t in count():
@@ -211,7 +213,8 @@ class Parallelized_DQN(BaseTrainer):
 
 
             if self.do_wandb and (terminateds[0] or truncateds[0]):
-                wandb.log({'total_reward': total_reward})
+                wandb.log({'total_reward': total_reward, 'episode':epis_0_endings})
+                epis_0_endings += 1
                 total_reward = 0
             cpt += list(terminateds).count(True) + list(truncateds).count(True)
             if self.do_wandb:

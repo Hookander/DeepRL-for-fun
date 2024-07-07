@@ -6,25 +6,28 @@ Will assume defaults for version 1.1
 /raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
 See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
   ret = run_job(
-/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/lazy.py:181: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
-  warnings.warn('Lazy modules are a new feature under heavy development '
 wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
 wandb: wandb version 0.17.4 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240706_101036-okm9dpqa
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240706_103723-exgecudh
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run charmed-haze-72
+wandb: Syncing run kind-microwave-74
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/okm9dpqa
-wandb: - 2.270 MB of 2.270 MB uploadedwandb: \ 2.270 MB of 2.270 MB uploadedwandb: | 2.270 MB of 2.274 MB uploadedwandb: 
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/exgecudh
+wandb: - 0.364 MB of 0.364 MB uploadedwandb: \ 0.364 MB of 0.364 MB uploadedwandb: | 0.364 MB of 0.364 MB uploadedwandb: / 0.369 MB of 0.373 MB uploaded (0.002 MB deduped)wandb: - 0.373 MB of 0.373 MB uploaded (0.002 MB deduped)wandb: 
 wandb: Run history:
+wandb:      episode ▁
+wandb:      epsilon ▁
 wandb: total_reward ▁
 wandb: 
 wandb: Run summary:
-wandb: total_reward -59.45946
+wandb:      episode 0
+wandb:      epsilon 0.1
+wandb: total_reward -59.32203
 wandb: 
-wandb: 🚀 View run charmed-haze-72 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/okm9dpqa
-wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v11
-wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 2 other file(s)
-wandb: Find logs at: ./wandb/run-20240706_101036-okm9dpqa/logs
+wandb: 🚀 View run kind-microwave-74 at: https://wandb.ai/balthazar-martin123/DeepRL_test/runs/exgecudh
+wandb: ️⚡ View job at https://wandb.ai/balthazar-martin123/DeepRL_test/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE5MDUyNzQ2Ng==/version_details/v12
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 2 other file(s)
+wandb: Find logs at: ./wandb/run-20240706_103723-exgecudh/logs
+slurmstepd: error: *** JOB 11557 ON dgxa100 CANCELLED AT 2024-07-06T10:42:05 ***
