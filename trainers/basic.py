@@ -64,6 +64,8 @@ class BasicTrainer(BaseTrainer):
 
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
+            wandb.watch(self.policy_net, log="all")
+            wandb.config.update({"model_architecture": str(self.policy_net)})
 
 
 
