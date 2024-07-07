@@ -4,8 +4,8 @@ env : ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer parallel
-network : &network split_cnn
+trainer : &trainer basic
+network : &network cnn_space_invaders
 
 number_of_repeats : 1
 number_of_environments : 8

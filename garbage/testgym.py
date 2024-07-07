@@ -13,13 +13,19 @@ for i in range(300):
 
 #plt.imshow(state)
 
-d = 15
-plt.plot([0, 160], [210-d, 210-d], color='red', linewidth=1)
+d = 194
+plt.plot([0, 160], [d, d], color='red', linewidth=1)
+
+d = 195
+plt.plot([0, 160], [d, d], color='red', linewidth=1)
 
 d = 22
 plt.plot([0, 160], [d, d], color='red', linewidth=1)
 
+d = 183
+plt.plot([0, 160], [d, d], color='red', linewidth=1)
 
-plt.imshow(state[22:195, :, :])
+
+plt.imshow(state[:,:,2])
 plt.show()
 env.close()
