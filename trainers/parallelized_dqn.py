@@ -31,6 +31,7 @@ class Parallelized_DQN(BaseTrainer):
         self.env_name = config['env']
         self.num_env = config['number_of_environments']
         self.number_of_repeats = self.config['number_of_repeats']
+        self.death_penalty = -1
 
         self.num_episodes = self.config_trainer['num_episodes'] #1000
         self.batch_size = self.config_trainer['batch_size']
@@ -48,18 +49,24 @@ class Parallelized_DQN(BaseTrainer):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.is_continuous = self.config['continuous']
+        
+        wrappers_lambda = [lambda env: RepeatActionV0(env, self.number_of_repeats), 
+                           lambda env: DetectDeathV0(env, penalty = self.death_penalty)]
 
+        #! DetectDeathV0 is not working for a lot of environments, so we need to handle this case
+        #! don't want to rn...
+        
         try :
             # Not all environements can be continuous, so we need to handle this case
             self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
             self.env = gym.make(self.env_name, continuous = self.is_continuous)
         except:
-            self.envs = gym.make_vec(self.env_name, self.num_env)
+            self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda)
             self.env = gym.make(self.env_name)
 
         #self.envs = gym.make_vec(self.env_name, self.num_env)
-        self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
-        self.envs = DetectDeathV0(self.envs, penalty = -1)
+        #self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
+        #self.envs = DetectDeathV0(self.envs, penalty = -1)
 
         # To get the observation aned action spaces
         #self.env = gym.make(self.env_name)
@@ -74,8 +81,6 @@ class Parallelized_DQN(BaseTrainer):
 
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
-
-
 
     def select_action(self, states : [torch.Tensor], running_env_mask : [int]):
         
