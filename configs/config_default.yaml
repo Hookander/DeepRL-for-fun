@@ -15,6 +15,7 @@ do_wandb : False
 wandb_config:
   project : DeepRL_test
 
+# Wrappers to use
 
 
 # Defaults sub-configs and other Hydra config.

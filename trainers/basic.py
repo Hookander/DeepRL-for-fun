@@ -10,6 +10,7 @@ from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
 from src.wrappers.repeat_wrapper import RepeatActionV0
+from src.wrappers.space_invaders.detect_death import DetectDeathV0
 import wandb
 import yaml
 
@@ -53,6 +54,7 @@ class BasicTrainer(BaseTrainer):
             self.env = gym.make(self.env_name)
         
         self.env = RepeatActionV0(self.env, self.number_of_repeats)
+        self.env = DetectDeathV0(self.env, penalty = -1)
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
