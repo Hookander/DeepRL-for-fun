@@ -10,6 +10,7 @@ from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
 from networks.base_net import BaseNet
 from src.wrappers.repeat_wrapper import RepeatActionV0
+from src.wrappers.space_invaders.detect_death import DetectDeathV0
 import wandb
 import yaml
 import os
@@ -57,7 +58,8 @@ class Parallelized_DQN(BaseTrainer):
             self.env = gym.make(self.env_name)
 
         #self.envs = gym.make_vec(self.env_name, self.num_env)
-        #self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
+        self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
+        self.envs = DetectDeathV0(self.envs, penalty = -1)
 
         # To get the observation aned action spaces
         #self.env = gym.make(self.env_name)
