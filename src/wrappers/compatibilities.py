@@ -6,6 +6,6 @@ If they are not, we won't apply them in the trainer init method.
 """
 
 compatible_wrappers = {
-    'ALE/SpaceInvaders-v5': [RepeatActionV0, DetectDeathV0],
+    'ALE/SpaceInvaders-v5': [RepeatActionV0, SpaceInvadersWrapper],
     'CartPole-v1': [RepeatActionV0],
     'CarRacing-v2': [RepeatActionV0],}

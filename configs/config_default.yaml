@@ -4,7 +4,7 @@ env : ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer parallel
+trainer : &trainer basic
 network : &network cnn_space_invaders
 
 
@@ -21,7 +21,7 @@ wrappers :
   RepeatActionV0 :
     number_of_repeats : 0
 
-  DetectDeathV0 :
+  SpaceInvadersWrapper :
     penalty : -1
 
 # Defaults sub-configs and other Hydra config.

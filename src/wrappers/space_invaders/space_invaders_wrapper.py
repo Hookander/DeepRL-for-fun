@@ -8,11 +8,7 @@ from gymnasium.core import ActType, ObsType
 from gymnasium import Wrapper
 import numpy as np
 
-
-__all__ = ["DetectDeathV0"]
-
-
-class DetectDeathV0(Wrapper):
+class SpaceInvadersWrapper(Wrapper):
 
     def __init__(
         self, env: gym.Env[ObsType, ActType], penalty: float = -1, **kwargs):
@@ -58,12 +54,30 @@ class DetectDeathV0(Wrapper):
             if [162, 134, 56] in line:
                 return True
         return False
+    
+    def change_reward(self, reward):
+        """
+        The environment gives a different reward depending on the line of the shot
+        alien (the further the alien, the more points you get). This causes the agent to 
+        try to predict the movements of the farthest aliens, which is not what we want.
+        So we will change the reward
+        
+        According to the atari documentation, the reward is as follows(for each row):
+        row 1 : 5, row 2 : 10, row 3 : 15, row 4 : 20, row 5 : 25, row 6 : 30
+
+        We try the opposite, so the agent will try to shoot the closest aliens.
+        """
+        change_dict = {0 : 0, 5: 30, 10: 25, 15: 20, 20: 15, 25: 10, 30: 5}
+        return change_dict[reward]
 
     def step(
         self, action: ActType
     ) -> tuple[ObsType, float, bool, dict[str, Any]]:
         """Take a step in the environment."""
         state, reward, term, trunc, info = self.env.step(action)
+        
+        #update reward first
+        reward = self.change_reward(reward)
 
         square_to_check = state[self.y1:self.y2, self.x1:self.x2]
         
