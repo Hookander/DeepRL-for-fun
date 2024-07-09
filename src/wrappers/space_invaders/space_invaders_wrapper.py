@@ -40,6 +40,8 @@ class SpaceInvadersWrapper(Wrapper):
         self.x2 = 93
         self.y1 = 187
         self.y2 = 188
+        
+        self.check_reset_square = False
 
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
@@ -68,6 +70,8 @@ class SpaceInvadersWrapper(Wrapper):
         We try the opposite, so the agent will try to shoot the closest aliens.
         """
         change_dict = {0 : 0, 5: 30, 10: 25, 15: 20, 20: 15, 25: 10, 30: 5}
+        if reward not in change_dict:
+            return reward
         return change_dict[reward]
 
     def step(
@@ -81,7 +85,14 @@ class SpaceInvadersWrapper(Wrapper):
 
         square_to_check = state[self.y1:self.y2, self.x1:self.x2]
         
-        if self.check_square(square_to_check):
+        if self.check_square(square_to_check) and self.check_reset_square == False:
             reward += self.penalty
+            
+            # the lifes are showed for several frames, so we need to wait until the number disappears
+            self.check_reset_square = True
+        
+        if self.check_reset_square:
+            if not self.check_square(square_to_check):
+                self.check_reset_square = False
 
         return state, reward, term, trunc, info
