@@ -5,6 +5,7 @@ import gymnasium as gym
 import numpy as np
 from networks.linear import *
 from src.utils import *
+from src.wrappers import *
 from itertools import count
 from typing import Dict, Type
 from trainers.base_trainer import BaseTrainer
@@ -30,8 +31,6 @@ class Parallelized_DQN(BaseTrainer):
         print(self.config_trainer)
         self.env_name = config['env']
         self.num_env = config['number_of_environments']
-        self.number_of_repeats = self.config['number_of_repeats']
-        self.death_penalty = -1
 
         self.num_episodes = self.config_trainer['num_episodes'] #1000
         self.batch_size = self.config_trainer['batch_size']
@@ -50,26 +49,8 @@ class Parallelized_DQN(BaseTrainer):
 
         self.is_continuous = self.config['continuous']
         
-        wrappers_lambda = [lambda env: RepeatActionV0(env, self.number_of_repeats), 
-                           lambda env: DetectDeathV0(env, penalty = self.death_penalty)]
 
-        #! DetectDeathV0 is not working for a lot of environments, so we need to handle this case
-        #! don't want to rn...
-        
-        try :
-            # Not all environements can be continuous, so we need to handle this case
-            self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
-            self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        except:
-            self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda)
-            self.env = gym.make(self.env_name)
-
-        #self.envs = gym.make_vec(self.env_name, self.num_env)
-        #self.envs = RepeatActionV0(self.envs, self.number_of_repeats)
-        #self.envs = DetectDeathV0(self.envs, penalty = -1)
-
-        # To get the observation aned action spaces
-        #self.env = gym.make(self.env_name)
+        self.env, self.envs = self.get_env()
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
@@ -81,6 +62,27 @@ class Parallelized_DQN(BaseTrainer):
 
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
+
+    def get_env(self):
+        
+        # Prepares the wrappers
+        wrapper_dict = self.config['wrappers']
+        wrappers_lambda = []
+        
+        for wrapper_name, wrapper_params in wrapper_dict.items():
+            WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
+            if WrapperClass in compatible_wrappers[self.env_name]:
+                wrappers_lambda.append(lambda env: WrapperClass(env, **wrapper_params))
+        
+        try :
+            # Not all environements can be continuous, so we need to handle this case
+            self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
+            self.env = gym.make(self.env_name, continuous = self.is_continuous)
+        except:
+            self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda)
+            self.env = gym.make(self.env_name)
+        
+        return self.env, self.envs
 
     def select_action(self, states : [torch.Tensor], running_env_mask : [int]):
         

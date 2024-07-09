@@ -7,16 +7,22 @@ continuous : False
 trainer : &trainer parallel
 network : &network cnn_space_invaders
 
-number_of_repeats : 0
-number_of_environments : 2
+
+number_of_environments : 2 # If parallel selected
 
 # Logging
 do_wandb : False
 wandb_config:
   project : DeepRL_test
 
-# Wrappers to use
+# Wrappers to use (will not use them if not compatible with the environment)
+wrappers : 
 
+  RepeatActionV0 :
+    number_of_repeats : 0
+
+  DetectDeathV0 :
+    penalty : -1
 
 # Defaults sub-configs and other Hydra config.
 defaults:

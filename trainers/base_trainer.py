@@ -40,6 +40,13 @@ class BaseTrainer(ABC):
         Trains the model
         """
         raise NotImplementedError
+    
+    @abstractmethod
+    def get_env(self):
+        """
+        Returns the environment with the wrappers applied
+        """
+        raise NotImplementedError
 
     def save_model(self, path = "data/models/"):
         if self.do_wandb:

@@ -4,6 +4,7 @@ import math
 import gymnasium as gym
 from networks.linear import *
 from src.utils import *
+from src.wrappers import *
 from itertools import count
 import torch
 from typing import Dict, Type
@@ -13,7 +14,6 @@ from src.wrappers.repeat_wrapper import RepeatActionV0
 from src.wrappers.space_invaders.detect_death import DetectDeathV0
 import wandb
 import yaml
-
 
 
 class BasicTrainer(BaseTrainer):
@@ -26,10 +26,14 @@ class BasicTrainer(BaseTrainer):
         self.config_trainer = config['trainers']
         self.config_network = config['networks']
 
-        print(self.config_trainer)
+        print('totoot')
+        print(config['wrappers'])
+        
         self.env_name = config['env']
-        self.number_of_repeats = self.config['number_of_repeats']
+        
+        #self.number_of_repeats = self.config['number_of_repeats']
 
+        #Config trainer
         self.num_episodes = self.config_trainer['num_episodes'] #1000
         self.batch_size = self.config_trainer['batch_size']
         self.gamma = self.config_trainer['gamma'] #0.99
@@ -39,7 +43,6 @@ class BasicTrainer(BaseTrainer):
         self.eps_end = self.config_trainer['epsilon_end'] #0.01
         self.eps_decay = self.config_trainer['epsilon_decay'] #0.995
         
-
         self.do_wandb = config['do_wandb']
         self.wandb_config = config['wandb_config']
 
@@ -47,15 +50,8 @@ class BasicTrainer(BaseTrainer):
 
         self.is_continuous = self.config['continuous']
 
-        try :
-            # Not all environements can be continuous, so we need to handle this case
-            self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        except:
-            self.env = gym.make(self.env_name)
+        self.env = self.get_env()
         
-        self.env = RepeatActionV0(self.env, self.number_of_repeats)
-        self.env = DetectDeathV0(self.env, penalty = -1)
-
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
@@ -86,6 +82,29 @@ class BasicTrainer(BaseTrainer):
         else:
             return torch.tensor([[self.env.action_space.sample()]], device=self.device)
             #return torch.tensor([[self.env.action_space.sample()]], device=self.device, dtype=torch.long)
+
+    def get_env(self):
+        """
+        Returns the environment with the wrappers applied
+        The wrapper dict is in the config file {wrapper_name(Str): wrapper_params(Dict)}
+        """
+        
+        try :
+            # Not all environements can be continuous, so we need to handle this case
+            self.env = gym.make(self.env_name, continuous = self.is_continuous)
+        except:
+            self.env = gym.make(self.env_name)
+        
+        # Applies the wrappers
+        wrapper_dict = self.config['wrappers']
+        
+        for wrapper_name, wrapper_params in wrapper_dict.items():
+            WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
+            if WrapperClass in compatible_wrappers[self.env_name]:
+                self.env = WrapperClass(self.env, **wrapper_params)
+
+        
+        return self.env
 
     def optimize_model(self):
         if len(self.memory) < self.batch_size:

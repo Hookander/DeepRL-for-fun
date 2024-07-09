@@ -15,7 +15,7 @@ __all__ = ["DetectDeathV0"]
 class DetectDeathV0(Wrapper):
 
     def __init__(
-        self, env: gym.Env[ObsType, ActType], penalty: float = -1):
+        self, env: gym.Env[ObsType, ActType], penalty: float = -1, **kwargs):
         """Initialize DetectDeath wrapper.
 
         Args:

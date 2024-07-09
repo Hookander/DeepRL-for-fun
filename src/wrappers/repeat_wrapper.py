@@ -15,7 +15,7 @@ class RepeatActionV0(
 ):
 
     def __init__(
-        self, env: gym.Env[ObsType, ActType], number_of_repeats: int
+        self, env: gym.Env[ObsType, ActType], number_of_repeats: int, **kwargs
     ):
         """Initialize RepeatyAction wrapper.
 
