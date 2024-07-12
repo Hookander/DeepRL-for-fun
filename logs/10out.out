@@ -1,13 +1,17 @@
 Configuration used :
-env: CarRacing-v2
+env: ALE/SpaceInvaders-v5
 continuous: false
 trainer: basic
-network: cnn
-number_of_repeats: 0
-number_of_environments: 4
+network: cnn_space_invaders
+number_of_environments: 1
 do_wandb: true
 wandb_config:
   project: DeepRL_test
+wrappers:
+  RepeatActionV0:
+    number_of_repeats: 0
+  SpaceInvadersWrapper:
+    penalty: -30
 trainers:
   num_episodes: 1
   batch_size: 64
@@ -19,6 +23,6 @@ trainers:
   epsilon_decay: 0.999
 networks: {}
 
-{'num_episodes': 1, 'batch_size': 64, 'gamma': 0.99, 'tau': 0.001, 'learning_rate': 0.001, 'epsilon_start': 0.9, 'epsilon_end': 0.1, 'epsilon_decay': 0.999}
-training done
-Model saved at : data/models/kind-microwave-74CarRacing-v2_policy_net.pth
+totoot
+{'RepeatActionV0': {'number_of_repeats': 0}, 'SpaceInvadersWrapper': {'penalty': -30}}
+RepeatActionV0 init

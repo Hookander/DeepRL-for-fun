@@ -65,6 +65,7 @@ class Parallelized_DQN(BaseTrainer):
         
         # Prepares the wrappers
         wrapper_dict = self.config['wrappers']
+        print(wrapper_dict)
         wrappers_lambda = []
         
         for wrapper_name, wrapper_params in wrapper_dict.items():
@@ -72,6 +73,7 @@ class Parallelized_DQN(BaseTrainer):
             if WrapperClass in compatible_wrappers[self.env_name]:
                 wrappers_lambda.append(lambda env: WrapperClass(env, **wrapper_params))
         
+        print(wrappers_lambda)
         try :
             # Not all environements can be continuous, so we need to handle this case
             self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
@@ -79,7 +81,7 @@ class Parallelized_DQN(BaseTrainer):
         except:
             self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda)
             self.env = gym.make(self.env_name)
-        
+            
         return self.env, self.envs
 
     def select_action(self, states : [torch.Tensor], running_env_mask : [int]):

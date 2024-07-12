@@ -12,6 +12,7 @@ class SpaceInvadersWrapper(Wrapper):
 
     def __init__(
         self, env: gym.Env[ObsType, ActType], penalty: float = -1, **kwargs):
+        print('SpaceInvadersWrapper init')
         """Initialize DetectDeath wrapper.
 
         Args:
@@ -71,6 +72,7 @@ class SpaceInvadersWrapper(Wrapper):
         """
         change_dict = {0 : 0, 5: 30, 10: 25, 15: 20, 20: 15, 25: 10, 30: 5}
         if reward not in change_dict:
+            print('Reward not in dict', reward)
             return reward
         return change_dict[reward]
 
@@ -81,11 +83,12 @@ class SpaceInvadersWrapper(Wrapper):
         state, reward, term, trunc, info = self.env.step(action)
         
         #update reward first
-        reward = self.change_reward(reward)
+        #reward = self.change_reward(reward)
 
         square_to_check = state[self.y1:self.y2, self.x1:self.x2]
         
         if self.check_square(square_to_check) and self.check_reset_square == False:
+            print("Penalty applied", reward)
             reward += self.penalty
             
             # the lifes are showed for several frames, so we need to wait until the number disappears
@@ -93,6 +96,7 @@ class SpaceInvadersWrapper(Wrapper):
         
         if self.check_reset_square:
             if not self.check_square(square_to_check):
+                print("Lives disappeared")
                 self.check_reset_square = False
 
         return state, reward, term, trunc, info

@@ -8,10 +8,10 @@ trainer : &trainer basic
 network : &network cnn_space_invaders
 
 
-number_of_environments : 2 # If parallel selected
+number_of_environments : 1 # If parallel selected
 
 # Logging
-do_wandb : False
+do_wandb : True
 wandb_config:
   project : DeepRL_test
 
@@ -22,7 +22,7 @@ wrappers :
     number_of_repeats : 0
 
   SpaceInvadersWrapper :
-    penalty : -1
+    penalty : -30
 
 # Defaults sub-configs and other Hydra config.
 defaults:

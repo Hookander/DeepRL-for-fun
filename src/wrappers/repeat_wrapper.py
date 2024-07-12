@@ -7,26 +7,20 @@ import gymnasium as gym
 from gymnasium.core import ActType, ObsType
 
 
-__all__ = ["RepeatActionV0"]
 
-
-class RepeatActionV0(
-    gym.ActionWrapper[ObsType, ActType, ActType], gym.utils.RecordConstructorArgs
-):
+class RepeatActionV0(gym.ActionWrapper):
 
     def __init__(
-        self, env: gym.Env[ObsType, ActType], number_of_repeats: int, **kwargs
+        self, env, number_of_repeats: int, **kwargs
     ):
+        print('RepeatActionV0 init')
         """Initialize RepeatyAction wrapper.
 
         Args:
             env (Env): the wrapped environment
             number_of_repeats (int): number of steps to repeat the action
         """
-        gym.utils.RecordConstructorArgs.__init__(
-            self, number_of_repeats=number_of_repeats
-        )
-        gym.ActionWrapper.__init__(self, env)
+        super().__init__()(env)
 
         self.number_of_repeats = number_of_repeats
         self.executed_repeats = 0
