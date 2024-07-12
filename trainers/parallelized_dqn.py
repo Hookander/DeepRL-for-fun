@@ -61,26 +61,48 @@ class Parallelized_DQN(BaseTrainer):
         if self.do_wandb:
             wandb.init(project=self.wandb_config['project'], config = self.config)
 
+    def get_env2(self):
+        # Prepares the wrappers
+        wrapper_dict = self.config['wrappers']
+        wrappers_lambda = []
+        selected_wrappers = []
+        
+        self.envs = gym.make_vec(self.env_name, self.num_env,vectorization_mode='async')
+        self.env = gym.make(self.env_name)
+        
+        for wrapper_name, wrapper_params in wrapper_dict.items():
+            WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
+            if WrapperClass in compatible_wrappers[self.env_name]:
+                wrappers_lambda.append(lambda env: WrapperClass(env, **wrapper_params))
+                selected_wrappers.append(wrapper_name)
+                self.envs = WrapperClass(self.envs, **wrapper_params)
+                self.env = WrapperClass(self.env, **wrapper_params)
+     
+         
+        return self.env, self.envs
+
     def get_env(self):
         
         # Prepares the wrappers
         wrapper_dict = self.config['wrappers']
         print(wrapper_dict)
         wrappers_lambda = []
+        selected_wrappers = []
         
         for wrapper_name, wrapper_params in wrapper_dict.items():
             WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
             if WrapperClass in compatible_wrappers[self.env_name]:
                 wrappers_lambda.append(lambda env: WrapperClass(env, **wrapper_params))
+                selected_wrappers.append(wrapper_name)
         
         print(wrappers_lambda)
-        try :
-            # Not all environements can be continuous, so we need to handle this case
-            self.envs = gym.make_vec(self.env_name, self.num_env, continuous = self.is_continuous)
-            self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        except:
-            self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda)
-            self.env = gym.make(self.env_name)
+        print(selected_wrappers)
+        
+        self.envs = gym.make_vec(self.env_name, self.num_env, wrappers=wrappers_lambda, 
+                                 vectorization_mode='async')
+        self.env = gym.make(self.env_name)
+        
+        return self.get_env2()
             
         return self.env, self.envs
 

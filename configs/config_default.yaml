@@ -4,25 +4,30 @@ env : ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer basic
+trainer : &trainer parallel
 network : &network cnn_space_invaders
 
 
 number_of_environments : 1 # If parallel selected
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 
 # Wrappers to use (will not use them if not compatible with the environment)
-wrappers : 
+wrappers :
+
+  TestWrapper :
+    test : 1
 
   RepeatActionV0 :
     number_of_repeats : 0
 
   SpaceInvadersWrapper :
     penalty : -30
+  
+
 
 # Defaults sub-configs and other Hydra config.
 defaults:

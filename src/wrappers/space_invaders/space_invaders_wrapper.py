@@ -33,7 +33,7 @@ class SpaceInvadersWrapper(Wrapper):
         For each action, we check a small square of the screen to detect the color.
         
         """
-        super().__init__(env)
+        gym.Wrapper.__init__(self, env)
         assert penalty < 0, "Penalty must be negative"
         self.penalty = penalty
         
