@@ -1,6 +1,5 @@
 
 
-def toto(it = 0, **kwargs):
-    print(it)
-    
-toto(**{'it': 't', 'itit': 'toto'})
+f = lambda : 2
+
+print(f())

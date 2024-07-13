@@ -41,8 +41,14 @@ class SpaceInvadersWrapper(Wrapper):
         self.x2 = 93
         self.y1 = 187
         self.y2 = 188
-        
         self.check_reset_square = False
+        
+        self.player_color = [50, 132, 50]
+        
+        #To check the missiles
+        self.__ship_top = 184
+        self.__missile_color = [142, 142, 142]
+        self.area_height = 24
 
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
@@ -55,6 +61,26 @@ class SpaceInvadersWrapper(Wrapper):
     def check_square(self, square):
         for line in square:
             if [162, 134, 56] in line:
+                return True
+        return False
+    
+    
+    def get_pos(state):
+        #The color of the ship is [50 132  50], always on the line 193
+        line = state[193]
+        args = np.argwhere(np.all(line == self.player_color, axis=-1))
+        left, right = args[0][0], args[-1][0]
+
+        return left, right
+    
+    def check_missiles(self, state):
+        # For now we don't check whether the missile is coming from the player
+        # or the aliens
+        
+        left, right = self.get_pos(state)
+        area = state[self.__ship_top - self.area_height:self.__ship_top, left:right]
+        for line in area:
+            if self.__missile_color in line:
                 return True
         return False
     
