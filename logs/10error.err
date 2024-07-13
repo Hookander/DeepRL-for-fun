@@ -8,16 +8,15 @@ A.L.E: Arcade Learning Environment (version 0.8.1+53f58b7)
 /raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
 See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
   ret = run_job(
-Error executing job with overrides: []
-Traceback (most recent call last):
-  File "run.py", line 32, in main
-    trainer = TrainerClass(config, ModelClass)
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/basic.py", line 51, in __init__
-    self.env = self.get_env()
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/basic.py", line 102, in get_env
-    self.env = WrapperClass(self.env, **wrapper_params)
-  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/src/wrappers/repeat_wrapper.py", line 23, in __init__
-    super().__init__()(env)
-TypeError: __init__() missing 1 required positional argument: 'env'
-
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/lazy.py:181: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
+  warnings.warn('Lazy modules are a new feature under heavy development '
+wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.4 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.3
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240713_153730-v0rbd0a6
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run different-cosmos-118
+wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/v0rbd0a6
+slurmstepd: error: *** JOB 11599 ON dgxa100 CANCELLED AT 2024-07-13T15:38:04 ***

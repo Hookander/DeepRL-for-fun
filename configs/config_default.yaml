@@ -11,7 +11,7 @@ network : &network cnn_space_invaders
 number_of_environments : 1 # If parallel selected
 
 # Logging
-do_wandb : False
+do_wandb : True
 wandb_config:
   project : DeepRL_test
 

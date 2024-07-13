@@ -30,6 +30,6 @@ class TestWrapper(Wrapper):
     ) -> tuple[ObsType, float, bool, dict[str, Any]]:
         """Take a step in the environment."""
         state, reward, term, trunc, info = self.env.step(action)
-
+        #print('TEST WRAPPER STEP')
 
         return state, reward, term, trunc, info
