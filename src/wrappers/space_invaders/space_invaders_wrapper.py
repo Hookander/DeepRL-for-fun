@@ -81,7 +81,7 @@ class SpaceInvadersWrapper(Wrapper):
     ) -> tuple[ObsType, float, bool, dict[str, Any]]:
         """Take a step in the environment."""
         state, reward, term, trunc, info = self.env.step(action)
-        
+        #print(state.shape)
         #update reward first
         #reward = self.change_reward(reward)
 

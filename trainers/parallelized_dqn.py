@@ -62,24 +62,23 @@ class Parallelized_DQN(BaseTrainer):
             wandb.init(project=self.wandb_config['project'], config = self.config)
 
     def get_env(self):
-        # Prepares the wrappers
         wrapper_dict = self.config['wrappers']
         wrappers_lambda = []
         selected_wrappers = []
-        
-        self.envs = gym.make_vec(self.env_name, self.num_env,vectorization_mode='async')
+        def make_wrapped_env():
+            env = gym.make(self.env_name)
+            for wrapper_name, wrapper_params in wrapper_dict.items():
+                WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
+                if WrapperClass in compatible_wrappers[self.env_name]:
+                    env = WrapperClass(env, **wrapper_params)
+                    selected_wrappers.append(wrapper_name)
+            return env
+
+        self.envs = gym.vector.AsyncVectorEnv([make_wrapped_env for _ in range(self.num_env)])
         self.env = gym.make(self.env_name)
         
-        for wrapper_name, wrapper_params in wrapper_dict.items():
-            WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
-            if WrapperClass in compatible_wrappers[self.env_name]:
-                wrappers_lambda.append(lambda env: WrapperClass(env, **wrapper_params))
-                selected_wrappers.append(wrapper_name)
-                self.envs = WrapperClass(self.envs, **wrapper_params)
-                #self.env = WrapperClass(self.env, **wrapper_params)
-     
-         
         return self.env, self.envs
+
 
     def select_action(self, states : [torch.Tensor], running_env_mask : [int]):
         

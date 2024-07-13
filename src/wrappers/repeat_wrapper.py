@@ -43,6 +43,7 @@ class RepeatActionV0(
 
     def action(self, action: ActType) -> ActType:
         """Execute the action."""
+        #print('RepeatActionV0 action')
 
         if self.executed_repeats >= self.number_of_repeats:
             self.executed_repeats = 0
