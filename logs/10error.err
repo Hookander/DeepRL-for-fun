@@ -14,9 +14,8 @@ wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` 
 wandb: wandb version 0.17.4 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240713_153730-v0rbd0a6
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240713_171153-0e3x37tq
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run different-cosmos-118
+wandb: Syncing run laced-morning-131
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/v0rbd0a6
-slurmstepd: error: *** JOB 11599 ON dgxa100 CANCELLED AT 2024-07-13T15:38:04 ***
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/0e3x37tq

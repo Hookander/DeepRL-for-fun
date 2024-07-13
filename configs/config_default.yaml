@@ -18,9 +18,6 @@ wandb_config:
 # Wrappers to use (will not use them if not compatible with the environment)
 wrappers :
 
-  TestWrapper :
-    test : 1
-
   RepeatActionV0 :
     number_of_repeats : 0
 
