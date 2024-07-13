@@ -172,9 +172,6 @@ class Parallelized_DQN(BaseTrainer):
         self.optimizer.step()
     
     def train(self):
-        """
-        
-        """
 
         total_reward = 0
         # Initialize the environment and get its state
