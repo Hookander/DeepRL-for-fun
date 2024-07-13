@@ -11,7 +11,7 @@ import numpy as np
 class SpaceInvadersWrapper(Wrapper):
 
     def __init__(
-        self, env: gym.Env[ObsType, ActType], death_penalty: float = -1, missile_penalty:float, **kwargs):
+        self, env: gym.Env[ObsType, ActType], death_penalty: float = -1, missile_penalty:float = -1, **kwargs):
         print('SpaceInvadersWrapper init')
         """Initialize DetectDeath wrapper.
 
@@ -68,19 +68,23 @@ class SpaceInvadersWrapper(Wrapper):
         return False
     
     
-    def get_pos(state):
+    def get_pos(self, state):
         #The color of the ship is [50 132  50], always on the line 193
         line = state[193]
         args = np.argwhere(np.all(line == self.player_color, axis=-1))
-        left, right = args[0][0], args[-1][0]
-
-        return left, right
+        if len(args) > 1:
+            left, right = args[0][0], args[-1][0]
+            return left, right
+        else: #player not on screen
+            return None, None
     
     def check_missiles(self, state):
         # For now we don't check whether the missile is coming from the player
         # or the aliens
         
         left, right = self.get_pos(state)
+        if left is None:
+            return False
         area = state[self.__ship_top - self.area_height:self.__ship_top, left:right]
         for line in area:
             if self.__missile_color in line:
@@ -114,7 +118,7 @@ class SpaceInvadersWrapper(Wrapper):
         square_to_check = state[self.y1:self.y2, self.x1:self.x2]       
         if self.check_square(square_to_check) and self.check_reset_square == False:
             print("Penalty applied")
-            ret = self.penalty
+            ret = self.death_penalty
             
             # the lifes are showed for several frames, so we need to wait until the number disappears
             self.check_reset_square = True
