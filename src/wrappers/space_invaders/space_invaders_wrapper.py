@@ -11,7 +11,7 @@ import numpy as np
 class SpaceInvadersWrapper(Wrapper):
 
     def __init__(
-        self, env: gym.Env[ObsType, ActType], penalty: float = -1, **kwargs):
+        self, env: gym.Env[ObsType, ActType], death_penalty: float = -1, missile_penalty:float, **kwargs):
         print('SpaceInvadersWrapper init')
         """Initialize DetectDeath wrapper.
 
@@ -34,8 +34,11 @@ class SpaceInvadersWrapper(Wrapper):
         
         """
         gym.Wrapper.__init__(self, env)
-        assert penalty < 0, "Penalty must be negative"
-        self.penalty = penalty
+        assert death_penalty < 0, "death_penalty must be negative"
+        assert missile_penalty < 0, "missile_penalty must be negative"
+        
+        self.missile_penalty = missile_penalty
+        self.death_penalty = death_penalty
         
         self.x1 = 90
         self.x2 = 93
@@ -81,10 +84,11 @@ class SpaceInvadersWrapper(Wrapper):
         area = state[self.__ship_top - self.area_height:self.__ship_top, left:right]
         for line in area:
             if self.__missile_color in line:
+                print("Missile detected")
                 return True
         return False
     
-    def change_reward(self, reward):
+    def change_reward_distribution(self, reward):
         """
         The environment gives a different reward depending on the line of the shot
         alien (the further the alien, the more points you get). This causes the agent to 
@@ -95,6 +99,9 @@ class SpaceInvadersWrapper(Wrapper):
         row 1 : 5, row 2 : 10, row 3 : 15, row 4 : 20, row 5 : 25, row 6 : 30
 
         We try the opposite, so the agent will try to shoot the closest aliens.
+        
+        We also check for missiles in front of the player ship.
+        
         """
         change_dict = {0 : 0, 5: 30, 10: 25, 15: 20, 20: 15, 25: 10, 30: 5}
         if reward not in change_dict:
@@ -102,20 +109,12 @@ class SpaceInvadersWrapper(Wrapper):
             return reward
         return change_dict[reward]
 
-    def step(
-        self, action: ActType
-    ) -> tuple[ObsType, float, bool, dict[str, Any]]:
-        """Take a step in the environment."""
-        state, reward, term, trunc, info = self.env.step(action)
-        #print(state.shape)
-        #update reward first
-        #reward = self.change_reward(reward)
-
-        square_to_check = state[self.y1:self.y2, self.x1:self.x2]
-        
+    def check_death_penalty(self, state):
+        ret = 0
+        square_to_check = state[self.y1:self.y2, self.x1:self.x2]       
         if self.check_square(square_to_check) and self.check_reset_square == False:
-            print("Penalty applied", reward)
-            reward += self.penalty
+            print("Penalty applied")
+            ret = self.penalty
             
             # the lifes are showed for several frames, so we need to wait until the number disappears
             self.check_reset_square = True
@@ -124,5 +123,19 @@ class SpaceInvadersWrapper(Wrapper):
             if not self.check_square(square_to_check):
                 print("Lives disappeared")
                 self.check_reset_square = False
+        return ret
+
+    def step(
+        self, action: ActType
+    ) -> tuple[ObsType, float, bool, dict[str, Any]]:
+        """Take a step in the environment."""
+        state, reward, term, trunc, info = self.env.step(action)
+
+        reward += self.check_death_penalty(state)
+        
+        # for now we just change the reward if there is a missile in front of the player ship
+        # Later we will just give the info to the agent and let it learn by itself
+        reward += self.check_missiles(state) * self.missile_penalty
+        
 
         return state, reward, term, trunc, info

@@ -22,7 +22,8 @@ wrappers :
     number_of_repeats : 0
 
   SpaceInvadersWrapper :
-    penalty : -30
+    death_penalty : -30
+    missile_penalty : -1
   
 
 
