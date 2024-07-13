@@ -22,7 +22,7 @@ from networks.base_net import BaseNet
 class SpaceInvadersCNNTest(BaseNet):
 
     def __init__(self, observation_space, action_space, config):
-        super(SpaceInvadersCNN, self).__init__()
+        super(SpaceInvadersCNNTest, self).__init__()
 
         self.n_observations = nb_from_space(observation_space)
         self.n_actions = nb_from_space(action_space)

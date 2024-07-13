@@ -4,6 +4,7 @@ import torch
 from networks.linear import *
 from networks.cnn import *
 from networks.split_cnn import *
+from networks.cnn_space_invaders import *
 from src.wrappers.repeat_wrapper import RepeatActionV0
 import pygame
 
@@ -12,12 +13,12 @@ import pygame
 class Displayer():
 
     def __init__(self, path_to_model):
-        self.env_name = "CarRacing-v2"
-        self.env = gym.make(self.env_name, render_mode = 'human', continuous = False)
+        self.env_name = "ALE/SpaceInvaders-v5"
+        self.env = gym.make(self.env_name, render_mode = 'human')
         self.env = RepeatActionV0(self.env, 0)
 
         observation_space, action_space = self.env.observation_space, self.env.action_space
-        self.model = SplitCNN(observation_space, action_space, None)
+        self.model = SpaceInvadersCNN(observation_space, action_space, None)
         self.model.load_state_dict(torch.load(path_to_model, map_location=torch.device('cpu')))
     
     def display(self, nb):
@@ -35,5 +36,5 @@ class Displayer():
                     done = True
         self.env.close()
 
-disply = Displayer('data/models/easy-firefly-76/model.pth')
+disply = Displayer('data/models/hardy-morning-145/model.pth')
 disply.display(400)

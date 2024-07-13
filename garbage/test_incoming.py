@@ -21,11 +21,7 @@ def get_pos(state):
 for i in range(100):
     action = 4 #env.action_space.sample()
     state, reward, term, trunc, info = env.step(action)
-    try:
-        get_pos(state)
-    except:
-        print('END')
-        break
+
     if term or trunc:
         print('END')
         break
@@ -39,8 +35,8 @@ plt.plot([0, 160], [d, d], color='red', linewidth=1)
 
 left, right = get_pos(state)
 #vertical lines
-plt.plot([left, left], [184, 160], color='red', linewidth=1)
-plt.plot([right, right], [184, 160], color='red', linewidth=1)
+plt.plot([left, left], [184, 165], color='red', linewidth=1)
+plt.plot([right, right], [184, 165], color='red', linewidth=1)
 
 area = state[160:184, left:right]
 print(area.shape)

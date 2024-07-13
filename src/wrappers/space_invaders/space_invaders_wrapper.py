@@ -48,11 +48,14 @@ class SpaceInvadersWrapper(Wrapper):
         
         self.player_color = [50, 132, 50]
         
-        #To check the missiles
+        ##To check the missiles
         self.__ship_top = 184
         self.__missile_color = [142, 142, 142]
         self.area_height = 24
-
+        # To compare with the next area and check if a missile is coming or leaving
+        self.previous_missile_first_line = None
+        
+        
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
     ) -> tuple[ObsType, dict[str, Any]]:
@@ -81,17 +84,33 @@ class SpaceInvadersWrapper(Wrapper):
     def check_missiles(self, state):
         # For now we don't check whether the missile is coming from the player
         # or the aliens
-        
+        current_missile_first_line = None
         left, right = self.get_pos(state)
         if left is None:
+            self.previous_missile_first_line = None
             return False
         area = state[self.__ship_top - self.area_height:self.__ship_top, left:right]
-        for line in area:
+        
+        for n, line in enumerate(area):
             if self.__missile_color in line:
-                print("Missile detected")
+                current_missile_first_line = n
+                break
+        if current_missile_first_line is None:
+            self.previous_missile_first_line = None
+            # In this case we can't know for sure if a missile is coming or leaving
+            return False
+        # We compare with the previous first line to check if a missile is coming or leaving
+        if self.previous_missile_first_line is not None:
+            if current_missile_first_line > self.previous_missile_first_line:
+                self.previous_missile_first_line = current_missile_first_line
+                print("Incoming missile detected")
                 return True
+            else:
+                self.previous_missile_first_line = current_missile_first_line
+                return False
+        self.previous_missile_first_line = current_missile_first_line
         return False
-    
+
     def change_reward_distribution(self, reward):
         """
         The environment gives a different reward depending on the line of the shot
