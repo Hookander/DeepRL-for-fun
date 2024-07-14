@@ -49,3 +49,4 @@ class SpaceInvadersCNNTest(BaseNet):
     def forward(self, x):
 
         return torch.randn(self.n_actions)
+

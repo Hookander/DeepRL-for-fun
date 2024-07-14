@@ -75,7 +75,7 @@ class Parallelized_DQN(BaseTrainer):
             return env
 
         self.envs = gym.vector.AsyncVectorEnv([make_wrapped_env for _ in range(self.num_env)])
-        self.env = gym.make(self.env_name)
+        self.env = make_wrapped_env()
         
         return self.env, self.envs
 
