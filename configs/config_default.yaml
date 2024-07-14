@@ -26,7 +26,10 @@ wrappers :
     missile_penalty : -1 # Useless missiles can't be detected
   
   BreakoutWrapper :
-    tot : 0
+    nothing : 4
+  
+  HistoryWrapper :
+    n_history : 4
   
 
 

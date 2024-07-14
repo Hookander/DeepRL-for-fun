@@ -38,7 +38,7 @@ class SpaceInvadersWrapper(Wrapper):
         gym.Wrapper.__init__(self, env)
         # The observation space is a 4d tensor (210, 160, 3) but we will convert it to grayscale
         # and concatenate the last 4 states to have a 4d tensor (210, 160, 4)
-        self.observation_space = Box(0, 255, (210, 160, 4))
+        self.observation_space = Box(0, 255, (210, 160, 1))
                 
         
         assert death_penalty < 0, "death_penalty must be negative"
@@ -78,7 +78,6 @@ class SpaceInvadersWrapper(Wrapper):
             if [162, 134, 56] in line:
                 return True
         return False
-    
     
     def get_pos(self, state):
         #The color of the ship is [50 132  50], always on the line 193
