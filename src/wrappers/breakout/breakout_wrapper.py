@@ -19,7 +19,7 @@ class BreakoutWrapper(Wrapper):
         gym.Wrapper.__init__(self, env)
         # The observation space is a 4d tensor (210, 160, 3) but we will convert it to grayscale
         # and concatenate the last 4 states to have a 4d tensor (210, 160, 4)
-        self.observation_space = Box(0, 255, (210, 160, 4))
+        self.observation_space = Box(0, 255, (210, 160, 1))
 
         self.state_pile = deque([], maxlen=4) # To concatenate the last 4 states
         
@@ -43,10 +43,8 @@ class BreakoutWrapper(Wrapper):
         # Convert to grayscale
         state = np.dot(state[...,:3], [0.2989, 0.5870, 0.1140])
         state = np.expand_dims(state, axis=-1)
-        self.state_pile.append(state)
-        if len(self.state_pile) <4:
-            return np.concatenate([state for _ in range(4)], axis=-1)
-        return np.concatenate(self.state_pile, axis=-1)
+        
+        return state
 
     def reset(self, **kwargs) -> ObsType:
         state, info = self.env.reset(**kwargs)

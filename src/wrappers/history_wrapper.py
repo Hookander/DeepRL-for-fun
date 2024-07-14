@@ -1,18 +1,29 @@
-import numpy as np
-import gymnasium as gym
-from gymnasium import ActionWrapper, ObservationWrapper, RewardWrapper, Wrapper
+"""
+    A Wrapper to gives the models a sense of history.
+"""
 
+import numpy as np
+from gymnasium import ObservationWrapper
 import gymnasium as gym
 from gymnasium.spaces import Box, Discrete
 from collections import deque
 
 
-class RelativePosition(ObservationWrapper):
-    def __init__(self, env):
+class HistoryWrapper(ObservationWrapper):
+    def __init__(self, env, n_history=4, **kwargs):
+        print('HistoryWrapper init')
         super().__init__(env)
+        self.n_history = n_history
+        self.queue = deque([], maxlen=n_history)
         
-        self.pile_state = deque([], maxlen = 4)
-
+        self.observation_space = Box(
+            low=0,
+            high=255,
+            shape=(*self.observation_space.shape[:-1], self.observation_space.shape[-1] * n_history),
+            dtype=np.uint8
+        )
     def observation(self, obs):
-        
-        
+        self.queue.append(obs)
+        while len(self.queue) < self.n_history:
+            self.queue.append(np.zeros_like(obs))
+        return np.concatenate(self.queue, axis=-1)
