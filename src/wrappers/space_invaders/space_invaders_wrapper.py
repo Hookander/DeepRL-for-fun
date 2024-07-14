@@ -55,7 +55,6 @@ class SpaceInvadersWrapper(Wrapper):
         
         self.player_color = [50, 132, 50]
         
-        self.state_pile = deque([], maxlen=4) # To concatenate the last 4 states
         
         ##To check the missiles USELESS MISSILES NOT RENDERED IN THE STATE (don't know why)
         self.__ship_top = 184
@@ -165,10 +164,7 @@ class SpaceInvadersWrapper(Wrapper):
         # Convert to grayscale
         state = np.dot(state[...,:3], [0.2989, 0.5870, 0.1140])
         state = np.expand_dims(state, axis=-1)
-        self.state_pile.append(state)
-        if len(self.state_pile) <4:
-            return np.concatenate([state for _ in range(4)], axis=-1)
-        return np.concatenate(self.state_pile, axis=-1)
+        return state
 
     def reset(self, **kwargs) -> ObsType:
         state, info = self.env.reset(**kwargs)
@@ -188,5 +184,5 @@ class SpaceInvadersWrapper(Wrapper):
         # reward += self.check_missiles(state) * self.missile_penalty
         
         state = self.change_state(state)
-        print(state.shape)
+
         return state, reward, term, trunc, info
