@@ -44,7 +44,7 @@ class SpaceInvadersCNN(BaseNet):
         
         """The alien cnn"""
         self.alien_out = 500
-        self.layer1 = nn.Conv2d(3, 32, kernel_size=3)
+        self.layer1 = nn.Conv2d(4, 32, kernel_size=3)
         self.layer2 = nn.Conv2d(32, 50, kernel_size=3)
         self.layer3 = nn.Conv2d(50, 64, kernel_size=3)
         self.layer4 = nn.Conv2d(64, 128, kernel_size=3)
@@ -116,7 +116,7 @@ class SpaceInvadersCNN(BaseNet):
         """
         The use of Lazy modules requires a dummy input to be passed through the network
         """
-        x = torch.randn(self.observation_space.shape).unsqueeze(0)
+        x = torch.randn((210, 160, 4)).unsqueeze(0)
 
         x = self.forward(x)
         

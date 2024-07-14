@@ -5,6 +5,7 @@ from typing import Any
 
 import gymnasium as gym
 from gymnasium.core import ActType, ObsType
+from gymnasium.spaces import Box
 from gymnasium import Wrapper
 import numpy as np
 from collections import deque
@@ -35,6 +36,11 @@ class SpaceInvadersWrapper(Wrapper):
         
         """
         gym.Wrapper.__init__(self, env)
+        # The observation space is a 4d tensor (210, 160, 3) but we will convert it to grayscale
+        # and concatenate the last 4 states to have a 4d tensor (210, 160, 4)
+        self.observation_space = Box(0, 255, (210, 160, 4))
+                
+        
         assert death_penalty < 0, "death_penalty must be negative"
         assert missile_penalty < 0, "missile_penalty must be negative"
         
@@ -58,6 +64,7 @@ class SpaceInvadersWrapper(Wrapper):
         # To compare with the next area and check if a missile is coming or leaving
         self.previous_missile_first_line = None
         
+
         
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
@@ -163,6 +170,11 @@ class SpaceInvadersWrapper(Wrapper):
             return np.concatenate([state for _ in range(4)], axis=-1)
         return np.concatenate(self.state_pile, axis=-1)
 
+    def reset(self, **kwargs) -> ObsType:
+        state, info = self.env.reset(**kwargs)
+        state = self.change_state(state)
+        return state, info
+
     def step(
         self, action: ActType
     ) -> tuple[ObsType, float, bool, dict[str, Any]]:
@@ -175,6 +187,6 @@ class SpaceInvadersWrapper(Wrapper):
         # Later we will just give the info to the agent and let it learn by itself
         # reward += self.check_missiles(state) * self.missile_penalty
         
-        #state = self.change_state(state)
-        #print(state.shape)
+        state = self.change_state(state)
+        print(state.shape)
         return state, reward, term, trunc, info
