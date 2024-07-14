@@ -11,7 +11,7 @@ network : &network cnn_space_invaders
 number_of_environments : 1 # If parallel selected
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 
@@ -23,7 +23,7 @@ wrappers :
 
   SpaceInvadersWrapper :
     death_penalty : -30
-    missile_penalty : -1
+    missile_penalty : -1 # Useless missiles can't be detected
   
 
 

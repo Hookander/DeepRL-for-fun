@@ -6,6 +6,7 @@ from networks.cnn import *
 from networks.split_cnn import *
 from networks.cnn_space_invaders import *
 from src.wrappers.repeat_wrapper import RepeatActionV0
+from src.wrappers.space_invaders.space_invaders_wrapper import SpaceInvadersWrapper
 import pygame
 
 
@@ -16,6 +17,7 @@ class Displayer():
         self.env_name = "ALE/SpaceInvaders-v5"
         self.env = gym.make(self.env_name, render_mode = 'human')
         self.env = RepeatActionV0(self.env, 0)
+        #self.env = SpaceInvadersWrapper(self.env)
 
         observation_space, action_space = self.env.observation_space, self.env.action_space
         self.model = SpaceInvadersCNN(observation_space, action_space, None)
@@ -36,5 +38,5 @@ class Displayer():
                     done = True
         self.env.close()
 
-disply = Displayer('data/models/hardy-morning-145/model.pth')
+disply = Displayer('data/models/amber-wood-147/model.pth')
 disply.display(400)

@@ -7,6 +7,7 @@ import gymnasium as gym
 from gymnasium.core import ActType, ObsType
 from gymnasium import Wrapper
 import numpy as np
+from collections import deque
 
 class SpaceInvadersWrapper(Wrapper):
 
@@ -48,10 +49,12 @@ class SpaceInvadersWrapper(Wrapper):
         
         self.player_color = [50, 132, 50]
         
-        ##To check the missiles
+        self.state_pile = deque([], maxlen=4) # To concatenate the last 4 states
+        
+        ##To check the missiles USELESS MISSILES NOT RENDERED IN THE STATE (don't know why)
         self.__ship_top = 184
         self.__missile_color = [142, 142, 142]
-        self.area_height = 24
+        self.area_height = 30 #24
         # To compare with the next area and check if a missile is coming or leaving
         self.previous_missile_first_line = None
         
@@ -90,16 +93,18 @@ class SpaceInvadersWrapper(Wrapper):
             self.previous_missile_first_line = None
             return False
         area = state[self.__ship_top - self.area_height:self.__ship_top, left:right]
-        
+        print(area[0])
         for n, line in enumerate(area):
             if self.__missile_color in line:
                 current_missile_first_line = n
                 break
+        print(self.previous_missile_first_line, current_missile_first_line)
         if current_missile_first_line is None:
             self.previous_missile_first_line = None
             # In this case we can't know for sure if a missile is coming or leaving
             return False
         # We compare with the previous first line to check if a missile is coming or leaving
+        
         if self.previous_missile_first_line is not None:
             if current_missile_first_line > self.previous_missile_first_line:
                 self.previous_missile_first_line = current_missile_first_line
@@ -148,6 +153,16 @@ class SpaceInvadersWrapper(Wrapper):
                 self.check_reset_square = False
         return ret
 
+    def change_state(self, state):
+        
+        # Convert to grayscale
+        state = np.dot(state[...,:3], [0.2989, 0.5870, 0.1140])
+        state = np.expand_dims(state, axis=-1)
+        self.state_pile.append(state)
+        if len(self.state_pile) <4:
+            return np.concatenate([state for _ in range(4)], axis=-1)
+        return np.concatenate(self.state_pile, axis=-1)
+
     def step(
         self, action: ActType
     ) -> tuple[ObsType, float, bool, dict[str, Any]]:
@@ -158,7 +173,8 @@ class SpaceInvadersWrapper(Wrapper):
         
         # for now we just change the reward if there is a missile in front of the player ship
         # Later we will just give the info to the agent and let it learn by itself
-        reward += self.check_missiles(state) * self.missile_penalty
+        # reward += self.check_missiles(state) * self.missile_penalty
         
-
+        #state = self.change_state(state)
+        #print(state.shape)
         return state, reward, term, trunc, info
