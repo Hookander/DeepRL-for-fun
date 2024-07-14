@@ -188,5 +188,4 @@ class SpaceInvadersWrapper(Wrapper):
         # reward += self.check_missiles(state) * self.missile_penalty
         
         state = self.change_state(state)
-        print(state.shape)
         return state, reward, term, trunc, info

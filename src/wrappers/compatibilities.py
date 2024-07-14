@@ -8,4 +8,6 @@ If they are not, we won't apply them in the trainer init method.
 compatible_wrappers = {
     'ALE/SpaceInvaders-v5': [RepeatActionV0, SpaceInvadersWrapper, TestWrapper],
     'CartPole-v1': [RepeatActionV0],
-    'CarRacing-v2': [RepeatActionV0],}
+    'CarRacing-v2': [RepeatActionV0],
+    'ALE/Breakout-v5': [RepeatActionV0, BreakoutWrapper]}
+

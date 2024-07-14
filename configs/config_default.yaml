@@ -1,11 +1,11 @@
 
-env : ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
+env : "ALE/Breakout-v5" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer parallel
-network : &network cnn_space_invaders
+trainer : &trainer basic
+network : &network cnn_breakout
 
 
 number_of_environments : 1 # If parallel selected
@@ -24,6 +24,9 @@ wrappers :
   SpaceInvadersWrapper :
     death_penalty : -30
     missile_penalty : -1 # Useless missiles can't be detected
+  
+  BreakoutWrapper :
+    tot : 0
   
 
 
