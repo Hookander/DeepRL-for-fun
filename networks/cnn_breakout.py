@@ -34,10 +34,9 @@ class BreakoutCNN(BaseNet):
         
         
         self.cnn1 = nn.Conv2d(4, 32, kernel_size=3)
-        self.cnn2 = nn.Conv2d(32, 64, kernel_size=3)
-        self.cnn3 = nn.Conv2d(64, 128, kernel_size=3)
-        self.cnn4 = nn.Conv2d(128, 256, kernel_size=3)
-        self.cnn5 = nn.Conv2d(256, 512, kernel_size=3)
+        self.cnn2 = nn.Conv2d(32, 50, kernel_size=3)
+        self.cnn3 = nn.Conv2d(50, 64, kernel_size=3)
+        self.cnn4 = nn.Conv2d(64, 128, kernel_size=3)
         
         self.flatten = nn.Flatten()
         
@@ -53,17 +52,13 @@ class BreakoutCNN(BaseNet):
             nn.ReLU(),
             self.cnn4,
             nn.MaxPool2d(2),
-            nn.ReLU(),
-            self.cnn5,
-            nn.MaxPool2d(2),
-            nn.ReLU(),
+            nn.ReLU()
         )
         
-        self.lin1 = nn.LazyLinear(3000)
-        self.lin2 = nn.Linear(3000, 3000)
-        self.lin3 = nn.Linear(3000, 1000)
-        self.lin4 = nn.Linear(1000, 300)
-        self.lin5 = nn.Linear(300, nb_from_space(action_space))
+        self.lin1 = nn.LazyLinear(1500)
+        self.lin2 = nn.Linear(1500, 800)
+        self.lin3 = nn.Linear(800, 500)
+        self.lin4 = nn.Linear(500, nb_from_space(action_space))
         
         self.model_lin = nn.Sequential(
             self.lin1,
@@ -73,8 +68,6 @@ class BreakoutCNN(BaseNet):
             self.lin3,
             nn.ReLU(),
             self.lin4,
-            nn.ReLU(),
-            self.lin5
         )
         
         # For the lazy linear layer
@@ -95,7 +88,7 @@ class BreakoutCNN(BaseNet):
 
         x = x.permute(0, 3, 1, 2) # from NHWC to NCHW
         
-        x = self.crop(x)
+        #x = self.crop(x)
 
         x = self.cnn(x)
         x = self.flatten(x)
