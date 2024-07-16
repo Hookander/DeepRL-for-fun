@@ -41,5 +41,5 @@ class Displayer():
                     done = True
         self.env.close()
 
-disply = Displayer('data/models/gallant-mountain-152/model.pth')
+disply = Displayer('data/models/grateful-firebrand-157/model.pth')
 disply.display(400)
