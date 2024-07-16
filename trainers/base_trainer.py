@@ -50,7 +50,7 @@ class BaseTrainer(ABC):
 
     def save_model(self, path = "data/models/"):
         if self.do_wandb:
-            path = path + str(wandb.run.name)
+            path = path + str(wandb.run.name) + '_r'
             os.mkdir(path)
             config_path = path + "/config.yaml"
             model_path = path + "/model.pth"

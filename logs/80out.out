@@ -1,0 +1,37 @@
+Configuration used :
+env: ALE/Breakout-v5
+continuous: false
+trainer: parallel
+network: cnn_breakout
+number_of_environments: 24
+do_wandb: true
+wandb_config:
+  project: DeepRL_test
+wrappers:
+  RepeatActionV0:
+    number_of_repeats: 0
+  SpaceInvadersWrapper:
+    death_penalty: -30
+    missile_penalty: -1
+  BreakoutWrapper:
+    nothing: 4
+  HistoryWrapper:
+    n_history: 4
+trainers:
+  num_episodes: 3000
+  batch_size: 64
+  gamma: 0.99
+  tau: 0.001
+  learning_rate: 0.001
+  epsilon_start: 0.9
+  epsilon_end: 0.1
+  epsilon_decay: 0.999
+networks: {}
+
+{'num_episodes': 3000, 'batch_size': 64, 'gamma': 0.99, 'tau': 0.001, 'learning_rate': 0.001, 'epsilon_start': 0.9, 'epsilon_end': 0.1, 'epsilon_decay': 0.999}
+RepeatActionV0 init
+BreakoutWrapper init
+HistoryWrapper init
+RepeatActionV0 init
+BreakoutWrapper init
+HistoryWrapper init

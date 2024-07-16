@@ -1,0 +1,52 @@
+run.py:19: UserWarning: 
+The version_base parameter is not specified.
+Please specify a compatability version level, or None.
+Will assume defaults for version 1.1
+  @hydra.main(config_path="configs", config_name="config_default.yaml")
+A.L.E: Arcade Learning Environment (version 0.8.1+53f58b7)
+[Powered by Stella]
+/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
+See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
+  ret = run_job(
+/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/lazy.py:181: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
+  warnings.warn('Lazy modules are a new feature under heavy development '
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "run.py", line 32, in main
+    trainer = TrainerClass(config, ModelClass)
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_dqn.py", line 55, in __init__
+    self.policy_net.load_state_dict(torch.load(path_to_model))
+  File "/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 2153, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for BreakoutCNN:
+	Missing key(s) in state_dict: "cnn5.weight", "cnn5.bias", "cnn.12.weight", "cnn.12.bias", "lin5.weight", "lin5.bias", "model_lin.8.weight", "model_lin.8.bias". 
+	size mismatch for cnn2.weight: copying a param with shape torch.Size([50, 32, 3, 3]) from checkpoint, the shape in current model is torch.Size([64, 32, 3, 3]).
+	size mismatch for cnn2.bias: copying a param with shape torch.Size([50]) from checkpoint, the shape in current model is torch.Size([64]).
+	size mismatch for cnn3.weight: copying a param with shape torch.Size([64, 50, 3, 3]) from checkpoint, the shape in current model is torch.Size([128, 64, 3, 3]).
+	size mismatch for cnn3.bias: copying a param with shape torch.Size([64]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for cnn4.weight: copying a param with shape torch.Size([128, 64, 3, 3]) from checkpoint, the shape in current model is torch.Size([256, 128, 3, 3]).
+	size mismatch for cnn4.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([256]).
+	size mismatch for cnn.3.weight: copying a param with shape torch.Size([50, 32, 3, 3]) from checkpoint, the shape in current model is torch.Size([64, 32, 3, 3]).
+	size mismatch for cnn.3.bias: copying a param with shape torch.Size([50]) from checkpoint, the shape in current model is torch.Size([64]).
+	size mismatch for cnn.6.weight: copying a param with shape torch.Size([64, 50, 3, 3]) from checkpoint, the shape in current model is torch.Size([128, 64, 3, 3]).
+	size mismatch for cnn.6.bias: copying a param with shape torch.Size([64]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for cnn.9.weight: copying a param with shape torch.Size([128, 64, 3, 3]) from checkpoint, the shape in current model is torch.Size([256, 128, 3, 3]).
+	size mismatch for cnn.9.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([256]).
+	size mismatch for lin1.weight: copying a param with shape torch.Size([1500, 11264]) from checkpoint, the shape in current model is torch.Size([3000, 3072]).
+	size mismatch for lin1.bias: copying a param with shape torch.Size([1500]) from checkpoint, the shape in current model is torch.Size([3000]).
+	size mismatch for lin2.weight: copying a param with shape torch.Size([800, 1500]) from checkpoint, the shape in current model is torch.Size([3000, 3000]).
+	size mismatch for lin2.bias: copying a param with shape torch.Size([800]) from checkpoint, the shape in current model is torch.Size([3000]).
+	size mismatch for lin3.weight: copying a param with shape torch.Size([500, 800]) from checkpoint, the shape in current model is torch.Size([1000, 3000]).
+	size mismatch for lin3.bias: copying a param with shape torch.Size([500]) from checkpoint, the shape in current model is torch.Size([1000]).
+	size mismatch for lin4.weight: copying a param with shape torch.Size([4, 500]) from checkpoint, the shape in current model is torch.Size([300, 1000]).
+	size mismatch for lin4.bias: copying a param with shape torch.Size([4]) from checkpoint, the shape in current model is torch.Size([300]).
+	size mismatch for model_lin.0.weight: copying a param with shape torch.Size([1500, 11264]) from checkpoint, the shape in current model is torch.Size([3000, 3072]).
+	size mismatch for model_lin.0.bias: copying a param with shape torch.Size([1500]) from checkpoint, the shape in current model is torch.Size([3000]).
+	size mismatch for model_lin.2.weight: copying a param with shape torch.Size([800, 1500]) from checkpoint, the shape in current model is torch.Size([3000, 3000]).
+	size mismatch for model_lin.2.bias: copying a param with shape torch.Size([800]) from checkpoint, the shape in current model is torch.Size([3000]).
+	size mismatch for model_lin.4.weight: copying a param with shape torch.Size([500, 800]) from checkpoint, the shape in current model is torch.Size([1000, 3000]).
+	size mismatch for model_lin.4.bias: copying a param with shape torch.Size([500]) from checkpoint, the shape in current model is torch.Size([1000]).
+	size mismatch for model_lin.6.weight: copying a param with shape torch.Size([4, 500]) from checkpoint, the shape in current model is torch.Size([300, 1000]).
+	size mismatch for model_lin.6.bias: copying a param with shape torch.Size([4]) from checkpoint, the shape in current model is torch.Size([300]).
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
