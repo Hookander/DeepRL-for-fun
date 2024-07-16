@@ -51,6 +51,8 @@ class Parallelized_DQN(BaseTrainer):
         self.env, self.envs = self.get_env()
 
         self.policy_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
+        path_to_model = 'data/models/grateful-firebrand-157/model.pth'
+        self.policy_net.load_state_dict(torch.load(path_to_model))
         self.target_net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=self.lr, amsgrad=True)
@@ -59,7 +61,7 @@ class Parallelized_DQN(BaseTrainer):
         self.steps_done = 0
 
         if self.do_wandb:
-            wandb.init(project=self.wandb_config['project'], config = self.config)
+            wandb.init(project=self.wandb_config['project'], config = self.config, id = '0e3x37tq')
 
     def get_env(self):
         wrapper_dict = self.config['wrappers']
