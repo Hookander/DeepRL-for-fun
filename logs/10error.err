@@ -3,19 +3,15 @@ The version_base parameter is not specified.
 Please specify a compatability version level, or None.
 Will assume defaults for version 1.1
   @hydra.main(config_path="configs", config_name="config_default.yaml")
-A.L.E: Arcade Learning Environment (version 0.8.1+53f58b7)
-[Powered by Stella]
 /raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
 See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
   ret = run_job(
-/raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/torch/nn/modules/lazy.py:181: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
-  warnings.warn('Lazy modules are a new feature under heavy development '
 wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
 wandb: wandb version 0.17.4 is available!  To upgrade, please run:
 wandb:  $ pip install wandb --upgrade
 wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240713_171153-0e3x37tq
+wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240717_193008-wk4tvh4d
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run laced-morning-131
+wandb: Syncing run pious-water-163
 wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/0e3x37tq
+wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/wk4tvh4d

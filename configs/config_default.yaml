@@ -8,7 +8,7 @@ trainer : &trainer ppo
 network : &network linear
 
 
-number_of_environments : 1 # If parallel selected
+number_of_environments : 5 # If parallel selected
 
 # Logging
 do_wandb : True
