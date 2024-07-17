@@ -122,26 +122,29 @@ class PPO(BaseTrainer):
             rewards.insert(0, discounted_reward)
         
         rewards = torch.tensor(rewards, dtype=torch.float32).to(self.device)
-        rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
+        rewards_full = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
         
-        old_states = torch.stack(memory.states).detach()
-        old_actions = torch.tensor(memory.actions, dtype=torch.long).detach()
-        old_logprobs = torch.stack(memory.logprobs).detach()
+        old_states_full = torch.stack(memory.states).detach()
+        old_actions_full = torch.tensor(memory.actions, dtype=torch.long).detach()
+        old_logprobs_full = torch.stack(memory.logprobs).detach()
         
         for _ in range(self.K_epochs):
-            logprobs, state_values, dist_entropy = self.policy_net.evaluate(old_states.to(self.device), old_actions.to(self.device))
-            
-            ratios = torch.exp(logprobs - old_logprobs.detach())
-            advantages = rewards - state_values.detach()
-            
-            surr1 = ratios * advantages
-            surr2 = torch.clamp(ratios, 1-self.eps_clip, 1+self.eps_clip) * advantages
-            
-            loss = -torch.min(surr1, surr2) + 0.5*nn.MSELoss()(state_values, rewards) - 0.01*dist_entropy
-            
-            self.optimizer.zero_grad()
-            loss.mean().backward()
-            self.optimizer.step()
+            dataset = torch.utils.data.TensorDataset(old_states_full, old_actions_full, old_logprobs_full, rewards_full)
+            dataloader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
+            for old_states, old_actions, old_logprobs, rewards in dataloader:
+                logprobs, state_values, dist_entropy = self.policy_net.evaluate(old_states.to(self.device), old_actions.to(self.device))
+                
+                ratios = torch.exp(logprobs - old_logprobs.detach())
+                advantages = rewards - state_values.detach()
+                
+                surr1 = ratios * advantages
+                surr2 = torch.clamp(ratios, 1-self.eps_clip, 1+self.eps_clip) * advantages
+                
+                loss = -torch.min(surr1, surr2) + 0.5*nn.MSELoss()(state_values, rewards) - 0.01*dist_entropy
+                
+                self.optimizer.zero_grad()
+                loss.mean().backward()
+                self.optimizer.step()
         
         self.policy_old.load_state_dict(self.policy_net.state_dict())
     
