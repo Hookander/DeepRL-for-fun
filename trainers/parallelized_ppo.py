@@ -48,9 +48,8 @@ class ActorCritic(nn.Module):
         state_value = self.critic(state)
         return action_logprobs, torch.squeeze(state_value), dist_entropy
 
-class PPO(BaseTrainer): 
+class ParallelizedPPO(BaseTrainer): 
     def __init__(self, config, network: Type[BaseNet]):
-        
         super().__init__(config)
         
         self.networkClass = network
@@ -66,14 +65,15 @@ class PPO(BaseTrainer):
         self.update_timestep = self.config_trainer['update_timestep']
 
         self.env_name = config['env']
-        self.is_continuous = self.config['continuous'] # For some envs
+        self.num_env = config['number_of_environments']
+        self.is_continuous = self.config['continuous']
         
         self.do_wandb = config['do_wandb']
         self.wandb_config = config['wandb_config']
         
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-        self.env = self.get_env()
+        self.env, self.envs = self.get_env()
         
         self.net = network(self.env.observation_space, self.env.action_space, self.config_network).to(self.device)
         
@@ -84,33 +84,25 @@ class PPO(BaseTrainer):
         self.policy_old.load_state_dict(self.policy_net.state_dict())
         
         if self.do_wandb:
-            wandb.init(project=self.wandb_config['project'], config = self.config)
-            wandb.watch(self.policy_net, log="all")
-            wandb.config.update({"model_architecture": str(self.policy_net)})
-        
+            wandb.init(project=self.wandb_config['project'], config=self.config)
         
     def get_env(self):
-        """
-        Returns the environment with the wrappers applied
-        The wrapper dict is in the config file {wrapper_name(Str): wrapper_params(Dict)}
-        """
-        
-        try :
-            # Not all environements can be continuous, so we need to handle this case
-            self.env = gym.make(self.env_name, continuous = self.is_continuous)
-        except:
-            self.env = gym.make(self.env_name)
-        
-        # Applies the wrappers
         wrapper_dict = self.config['wrappers']
-        
-        for wrapper_name, wrapper_params in wrapper_dict.items():
-            WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
-            if WrapperClass in compatible_wrappers[self.env_name]:
-                self.env = WrapperClass(self.env, **wrapper_params)
+        wrappers_lambda = []
+        selected_wrappers = []
+        def make_wrapped_env():
+            env = gym.make(self.env_name)
+            for wrapper_name, wrapper_params in wrapper_dict.items():
+                WrapperClass = wrapper_name_to_WrapperClass[wrapper_name]
+                if WrapperClass in compatible_wrappers[self.env_name]:
+                    env = WrapperClass(env, **wrapper_params)
+                    selected_wrappers.append(wrapper_name)
+            return env
 
+        self.envs = gym.vector.AsyncVectorEnv([make_wrapped_env for _ in range(self.num_env)])
+        self.env = make_wrapped_env()
         
-        return self.env
+        return self.env, self.envs
     
     def optimize_model(self, memory):
         rewards = []
@@ -146,32 +138,47 @@ class PPO(BaseTrainer):
         self.policy_old.load_state_dict(self.policy_net.state_dict())
     
     def train(self):
-        
         memory = Memory()
         
         time_step = 0
-        for i_episode in range(self.num_episodes):
-            total_reward = 0
+        total_reward = 0
+        epis_0_endings = 0
+        cpt = 0
+        
+        states, _ = self.envs.reset()
+        states = torch.FloatTensor(states).to(self.device)
+        
+        for t in count():
+            time_step += 1
             
-            state, info = self.env.reset()
-            for t in count():
-                time_step += 1
-                
-                action, log_prob = self.policy_old.act(torch.FloatTensor(state).unsqueeze(0).to(self.device))
-                state, reward, terminated, truncated, info = self.env.step(action)
-                total_reward += reward
-                memory.states.append(torch.FloatTensor(state))
-                memory.actions.append(action)
-                memory.logprobs.append(log_prob)
-                memory.rewards.append(reward)
-                memory.is_terminals.append(terminated or truncated)
-                
-                if time_step % self.update_timestep == 0:
-                    self.optimize_model(memory)
-                    memory.clear_memory()
-                    time_step = 0
+            actions, log_probs = self.policy_old.act(states)
+            next_states, rewards, terminateds, truncateds, _ = self.envs.step(actions.cpu().numpy())
             
-                if terminated or truncated:
-                    break
+            total_reward += rewards[0]  # Log reward for the first environment
+            
+            memory.states.extend(states)
+            memory.actions.extend(actions)
+            memory.logprobs.extend(log_probs)
+            memory.rewards.extend(torch.FloatTensor(rewards).to(self.device))
+            memory.is_terminals.extend(torch.BoolTensor(terminateds).to(self.device))
+            
+            states = torch.FloatTensor(next_states).to(self.device)
+            
+            if time_step % self.update_timestep == 0:
+                self.optimize_model(memory)
+                memory.clear_memory()
+                time_step = 0
+            
+            if terminateds[0] or truncateds[0]:
+                if self.do_wandb:
+                    wandb.log({'total_reward': total_reward, 'episode': epis_0_endings})
+                epis_0_endings += 1
+                total_reward = 0
+                
+            cpt += list(terminateds).count(True) + list(truncateds).count(True)
             if self.do_wandb:
-                wandb.log({'total_reward': total_reward, 'episode': i_episode})
+                wandb.log({'Episode endings' : cpt})
+            if cpt >= self.num_episodes:
+                break
+        
+        print("Training done")
