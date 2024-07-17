@@ -124,7 +124,7 @@ class PPO(BaseTrainer):
         old_logprobs = torch.stack(memory.logprobs).detach()
         
         for _ in range(self.K_epochs):
-            logprobs, state_values, dist_entropy = self.policy.evaluate(old_states, old_actions)
+            logprobs, state_values, dist_entropy = self.policy.evaluate(old_states.to(self.device), old_actions)
             
             ratios = torch.exp(logprobs - old_logprobs.detach())
             advantages = rewards - state_values.detach()

@@ -1,11 +1,11 @@
 
-env : "CartPole-v1" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
+env : "ALE/Breakout-v5" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 
 # Continuous action space for some environments
 continuous : False
 
 trainer : &trainer ppo
-network : &network linear
+network : &network cnn_breakout
 
 
 number_of_environments : 1 # If parallel selected
