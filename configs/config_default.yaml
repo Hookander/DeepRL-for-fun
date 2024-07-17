@@ -4,14 +4,14 @@ env : "CartPole-v1" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer ppo
+trainer : &trainer parallel_ppo
 network : &network linear
 
 
-number_of_environments : 5 # If parallel selected
+number_of_environments : 12 # If parallel selected
 
 # Logging
-do_wandb : True
+do_wandb : False
 wandb_config:
   project : DeepRL_test
 

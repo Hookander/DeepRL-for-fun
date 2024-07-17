@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --job-name=drl
-#SBATCH --output=/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/logs/10out.out
-#SBATCH --error=/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/logs/10error.err
+#SBATCH --output=/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/logs/40out.out
+#SBATCH --error=/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/logs/40error.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=scrapypi@gmail.com
 

@@ -4,4 +4,4 @@ gamma : 0.99
 learning_rate : 0.001
 K_epochs : 4
 eps_clip : 0.2
-update_timestep : 2
+update_timestep : 200
