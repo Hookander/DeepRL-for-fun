@@ -6,12 +6,14 @@ Will assume defaults for version 1.1
 /raid/home/automatants/martin_bal/.venv/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
 See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
   ret = run_job(
-wandb: Currently logged in as: balthazar-martin123. Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.17.4 is available!  To upgrade, please run:
-wandb:  $ pip install wandb --upgrade
-wandb: Tracking run with wandb version 0.16.3
-wandb: Run data is saved locally in /raid/home/automatants/martin_bal/DeepRL/DeepRL_test/wandb/run-20240717_193008-wk4tvh4d
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run pious-water-163
-wandb: ⭐️ View project at https://wandb.ai/balthazar-martin123/DeepRL_test
-wandb: 🚀 View run at https://wandb.ai/balthazar-martin123/DeepRL_test/runs/wk4tvh4d
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "run.py", line 34, in main
+    trainer.train()
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_ppo.py", line 156, in train
+    actions, log_probs = self.policy_old.act(states)
+  File "/raid/home/automatants/martin_bal/DeepRL/DeepRL_test/trainers/parallelized_ppo.py", line 41, in act
+    item = action.item()
+RuntimeError: a Tensor with 12 elements cannot be converted to Scalar
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

@@ -1,0 +1,36 @@
+Configuration used :
+env: CartPole-v1
+continuous: false
+trainer: parallel_ppo
+network: linear
+number_of_environments: 12
+do_wandb: false
+wandb_config:
+  project: DeepRL_test
+wrappers:
+  RepeatActionV0:
+    number_of_repeats: 0
+  SpaceInvadersWrapper:
+    death_penalty: -30
+    missile_penalty: -1
+  BreakoutWrapper:
+    nothing: 4
+  HistoryWrapper:
+    n_history: 4
+trainers:
+  num_episodes: 10000
+  batch_size: 64
+  gamma: 0.99
+  learning_rate: 0.001
+  K_epochs: 4
+  eps_clip: 0.2
+  update_timestep: 200
+networks:
+  layers:
+  - 128
+  - 128
+
+RepeatActionV0 init
+HistoryWrapper init
+RepeatActionV0 init
+HistoryWrapper init
