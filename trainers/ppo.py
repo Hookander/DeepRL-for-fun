@@ -121,7 +121,7 @@ class PPO(BaseTrainer):
             discounted_reward = reward + (self.gamma * discounted_reward)
             rewards.insert(0, discounted_reward)
         
-        rewards = torch.tensor(rewards, dtype=torch.float32)
+        rewards = torch.tensor(rewards, dtype=torch.float32).to(self.device)
         rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
         
         old_states = torch.stack(memory.states).detach()
@@ -129,7 +129,7 @@ class PPO(BaseTrainer):
         old_logprobs = torch.stack(memory.logprobs).detach()
         
         for _ in range(self.K_epochs):
-            logprobs, state_values, dist_entropy = self.policy_net.evaluate(old_states.to(self.device), old_actions)
+            logprobs, state_values, dist_entropy = self.policy_net.evaluate(old_states.to(self.device), old_actions.to(self.device))
             
             ratios = torch.exp(logprobs - old_logprobs.detach())
             advantages = rewards - state_values.detach()
