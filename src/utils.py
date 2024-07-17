@@ -7,6 +7,7 @@ Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
 class ReplayMemory(object):
+    # For the DQN algorithm
 
     def __init__(self, capacity):
         self.memory = deque([], maxlen=capacity)
@@ -32,3 +33,20 @@ def nb_from_space(space):
         return nb
     else:
         raise ValueError("Space not recognized")
+    
+    
+class Memory:
+    # For the PPO algorithm
+    def __init__(self):
+        self.actions = []
+        self.states = []
+        self.logprobs = []
+        self.rewards = []
+        self.is_terminals = []
+    
+    def clear_memory(self):
+        del self.actions[:]
+        del self.states[:]
+        del self.logprobs[:]
+        del self.rewards[:]
+        del self.is_terminals[:]

@@ -19,7 +19,7 @@ class BaseTrainer(ABC):
 
         self.config = config
 
-    @abstractmethod
+    # @abstractmethod
     def select_action(self, state):
         
         """
