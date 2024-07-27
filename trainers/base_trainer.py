@@ -27,7 +27,7 @@ class BaseTrainer(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
+    # @abstractmethod
     def optimize_model(self):
         """
         Optimizes the model (policy network)

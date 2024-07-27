@@ -9,5 +9,6 @@ compatible_wrappers = {
     'ALE/SpaceInvaders-v5': [RepeatActionV0, SpaceInvadersWrapper, HistoryWrapper],
     'CartPole-v1': [RepeatActionV0, HistoryWrapper],
     'CarRacing-v2': [RepeatActionV0, HistoryWrapper],
-    'ALE/Breakout-v5': [RepeatActionV0, BreakoutWrapper, HistoryWrapper],}
+    'ALE/Breakout-v5': [RepeatActionV0, BreakoutWrapper, HistoryWrapper],
+    "PongNoFrameskip-v4" : []}
 

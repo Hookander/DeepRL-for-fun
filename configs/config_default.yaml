@@ -1,10 +1,10 @@
 
-env : "ALE/Breakout-v5" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
+env : "PongNoFrameskip-v4" #"ALE/Breakout-v5" #ALE/SpaceInvaders-v5 #CartPole-v1 #CarRacing-v2
 
 # Continuous action space for some environments
 continuous : False
 
-trainer : &trainer parallel_ppo
+trainer : &trainer sb3
 network : &network cnn_breakout
 
 
